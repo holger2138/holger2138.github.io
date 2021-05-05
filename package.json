@@ -1,0 +1,31 @@
+{
+  "name": "holger2138.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs --port 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holger2138/holger2138.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/holger2138/holger2138.github.io.git/issues"
+  },
+  "homepage": "https://github.com/holger2138/holger2138.github.io.git#readme",
+  "devDependencies": {
+    "@types/node": "^18.16.6",
+    "axios": "^1.2.2",
+    "markdown-it-mathjax3": "^4.3.2",
+    "sass": "^1.57.1",
+    "vitepress": "^1.0.0-alpha.35",
+    "vue": "^3.2.45"
+  }
+}

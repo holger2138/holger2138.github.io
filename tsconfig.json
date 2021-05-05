@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["docs/*"]
+    },
+    "allowJs": true,
+    "checkJs": true,
+    "module": "ESNext",
+    "moduleResolution": "Node"
+  },
+  "include": ["docs/**/*", "docs/.vitepress/**/*.ts"],
+  "exclude": ["docs/.vitepress/dist", "docs/snippets/*"]
+}
