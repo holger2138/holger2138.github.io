@@ -1,2 +1,5 @@
 node_modules/
 docs/.vitepress/dist
+deploy.sh
+jsconfig.json
+.log
