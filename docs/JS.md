@@ -882,10 +882,14 @@ console.log(objProxy);
 
 ## Promise
 
+<!-- <<< @/../deploy.sh{1,4-10 sh} -->
+
 [Promises/A+](https://promisesaplus.com/)
 
 ::: details 手写 Promise
+
 <<< @/snippets/promise.js
+
 :::
 
 - 场景考虑

@@ -7,11 +7,23 @@ git config --global user.name "HOLER"
 git config --global user.email "holger2138@gmail.com"
 # 创建SSH Keys -t 类型 -C 文件描述
 ssh-keygen -t rsa -C "holger2138@gmail.com"
-git config --global --list # 查看全局配置
 git config --global http.https://github.com.proxy localhost:10809
 git config --global --unset http.https://github.com.proxy
+git config --global --list # 查看全局配置
 npm config set registry https://registry.npmmirror.com/
 
+```
+
+```txt
+Host github.com
+  Hostname ssh.github.com
+  User git
+  Port 443
+  ProxyCommand connect -S 127.0.0.1:7897 %h %p
+
+# https 地址直接复制 
+# git地址 需要更改变 ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
+参考 https://docs.github.com/en/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
 ```
 
 ::: tip
