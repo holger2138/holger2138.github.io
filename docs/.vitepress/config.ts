@@ -1,8 +1,9 @@
-import { DefaultTheme, defineConfig } from 'vitepress';
+import { defineConfigWithTheme } from 'vitepress';
 import mathjax3 from 'markdown-it-mathjax3';
+import { fileURLToPath, URL } from 'node:url';
 
 const customElements = ['mjx-container'];
-const themeConfig: DefaultTheme.Config = {
+const themeConfig = {
   logo: '/logo.svg',
   siteTitle: 'vitePress',
   nav: [
@@ -17,6 +18,7 @@ const themeConfig: DefaultTheme.Config = {
       collapsible: true,
       collapsed: false,
       items: [
+        { text: 'Guide', link: '/guide' },
         { text: 'DOM', link: '/DOM' },
         { text: 'vue', link: '/vue 源码分析' },
         { text: 'js高级', link: '/js高级' },
@@ -62,12 +64,12 @@ const themeConfig: DefaultTheme.Config = {
     }
   ],
   footer: {
-    message: 'Released under the MIT License.',
-    copyright: 'Copyright © 2022-present HOUJIAN'
+    message:
+      'Released under the MIT License | Copyright © 2022-present <a href="mailto:holger2138@foxmail.com">HOUJIAN<a>'
   }
 };
 
-export default defineConfig({
+export default defineConfigWithTheme({
   lang: 'zh-CN',
   title: 'VitePress',
   description: 'docs',
@@ -87,6 +89,13 @@ export default defineConfig({
       }
     }
   },
-  themeConfig,
+  vite: {
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('../../docs', import.meta.url))
+      }
+    }
+  },
+  themeConfig: themeConfig,
   lastUpdated: true
 });

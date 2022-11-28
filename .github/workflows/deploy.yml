@@ -22,16 +22,13 @@ jobs:
 
       - name: Build
         run: npm run docs:build --if-present
-        
+
       - name: Download
         run: curl -o docs/.vitepress/dist/iptv.m3u https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u
-        
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/.vitepress/dist
           # cname: example.com # if wanna deploy to custom domain
-          
-      
-          

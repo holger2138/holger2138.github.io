@@ -304,7 +304,7 @@ ls **/*.txt # 打开后 a.txt  sub1/b.txt  sub1/sub2/c.txt
 
 ```
 
-### Shell 输入输出重定向
+## Shell 输入输出重定向
 
 #### 重定向
 
@@ -385,7 +385,7 @@ echo -e "hello\nworld" | cat | wc -l # 终端输出2
 # < 改变读取（stdin） > 改变输出(stdout)
 ```
 
-### 常用命令
+## 常用命令
 
 - rm
 
@@ -444,12 +444,17 @@ s 删除当前光标下一个位置的内容，并插入 S 清除当前行内容
 
 ## Curl 下载
 
-::: tip Usage:
-- -L 请求重定向 -x 等同于 --proxy 使用代理
+::: tip [Usage](https://daichangya.github.io/everything-curl/#/book/curl.zh):
+
+- -L 请求重定向
+- -x --proxy 使用代理
 - -O --remote-name URL 最后一部分当作文件名
 - -J --remote-header-name 服务器可能会提供一个名为 Content-Disposition 作为响应，这个响应包含传输内容的文件名建议，优先及比 -O 要高
-- -o --output 可以是文件名及路径拼接文件名 `-C --continue-at` 下载续传。 不能与 -J 属性组合
-- -o - 可能强制， stdout > 可以重定向
+- -o --output 可以是文件名及路径拼接文件名 -o- | -o - 可能强制二进制文件输出到终端, stdout > 可以重定向
+- -C --continue-at 下载续传。 不能与 -J 属性组合
+- --create-dirs 用于创建下载目录
+- --output-dir 下载目录，如果目录不存在，不会自动创建 可以使用 --create-dirs
+
 :::
 
 ```sh
@@ -457,7 +462,21 @@ curl -LOx http://localhost:10809 https://github.com/2dust/v2rayN/releases/downlo
 curl -LOx http://localhost:10809 https://github.com/2dust/v2rayN/releases/download/5.38/v2rayN-Core.zip -C -
 curl -Lx http://localhost:10809 https://github.com/2dust/v2rayN/releases/download/5.38/v2rayN-Core.zip >./v2rayN-Core.zip
 curl -Ox http://localhost:10809 https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u
+```
+
+- 执行脚本
+
+  [官方文档](https://www.gnu.org/software/bash/manual/bash.html#Invoking-Bash)
+  [参考链接](https://stackoverflow.com/questions/4642915/passing-parameters-to-bash-when-executing-a-script-fetched-by-curl/4642975)
+
+```sh
 curl -sx http://localshot:10809 https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/test.sh | sh # 执行远程脚本
+# <( 不能有空格 有参数时
+sh <(curl -sx $proxy https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/test.sh) 123
+# bash -s  -- 将 bash 后面的内容视为参数而不是选项
+curl -sx $proxy https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/test.sh | sh -s 123
+curl -sx $proxy https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/test.sh | sh -s -- 123
+curl -sx $proxy https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/test.sh | sh /dev/stdin 123
 ```
 
 ## 快捷键

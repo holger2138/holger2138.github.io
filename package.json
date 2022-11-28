@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/holger2138/holger2138.github.io.git#readme",
   "devDependencies": {
+    "@types/node": "^18.11.9",
     "markdown-it-mathjax3": "^4.3.2",
     "vitepress": "^1.0.0-alpha.29",
     "vue": "^3.2.45"

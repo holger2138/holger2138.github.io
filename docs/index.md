@@ -1,61 +1,35 @@
-## Level 2
+---
+layout: home
 
-::: info
-This is an info box.
-:::
+title: 首页
+titleTemplate: docs
 
-::: tip
-This is a tip.
-:::
+hero:
+  name: Vitepress
+  text: 使用 Vitepress 搭建组件库文档站点。
+  tagline: 基于 vitepress-theme-demoblock 插件来实现 Vue 组件的支持。
+  image:
+    src: /logo.svg
+    alt: vitepress-theme-demoblock
+  actions:
+    - theme: brand
+      text: Get Started
+      link: /guide
+    - theme: alt
+      text: Learn More
+      link: /guide
 
-::: warning
-This is a warning.
-:::
-
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
-
-## Import Code Snippets
-
-::: info Usage:
-`<<< @/filepath{highlightLines}`
-:::
-
-<<< @/snippets/snippets.js#bar{2 javascript}
-
-<!-- <<< @/../deploy.sh{1,4-10 sh} -->
-
-## Level 2 语法相关
-
-- 算术 {{ 1 + 2 }}
-
-- 循环 <span v-for="i in 3">{{ i }}</span>
-
-- 组件引用
-<script setup>
-import { useData } from 'vitepress'
-import CustomComponent from '../components/Custom.vue'
-
-const page = useData()
-// console.log(page)
-</script>
-
-This is a .md using a custom component
-
-<CustomComponent />
-<!-- <pre>{{ page }}</pre> -->
-
-## Level 2 文档相关
-
-[ES6 相关](./js%E9%AB%98%E7%BA%A7.md)
-
-[TypeScript](./TypeScript.md)
-
-[Git 相关](./Tool-Document.md)
-
-[Linux](./Linux.md)
+features:
+  - icon: ⚡️
+    title: "Vite: The DX that can't be beat"
+    details: Feel the speed of Vite. Instant server start and lightning fast HMR that stays fast regardless of the app size.
+  - icon: 💡
+    title: Designed to be simplicity first
+    details: With Markdown-centered content, it's built to help you focus on writing and deployed with minimum configuration.
+  - icon: 🛠️
+    title: Power of Vue meets Markdown
+    details: Enhance your content with all the features of Vue in Markdown, while being able to customize your site with Vue.
+  - icon: 🔑
+    title: Fully static yet still dynamic
+    details: Go wild with true SSG + SPA architecture. Static on page load, but engage users with 100% interactivity from there.
+---
