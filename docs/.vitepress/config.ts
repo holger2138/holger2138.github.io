@@ -4,8 +4,8 @@ import { fileURLToPath, URL } from 'node:url';
 
 const customElements = ['mjx-container'];
 const themeConfig = {
-  logo: '/logo.svg',
-  siteTitle: 'vitePress',
+  logo: '/image.png',
+  siteTitle: false,
   nav: [
     { text: 'Guide', link: 'https://vitepress.vuejs.org/guide/what-is-vitepress' },
     { text: 'Configs', link: 'https://vitepress.vuejs.org/config/introduction' },
@@ -40,7 +40,7 @@ const themeConfig = {
       collapsed: false,
       items: [
         { text: 'Tool-Document', link: '/Tool-Document.md' },
-        { text: 'VitePress相关语法', link: '/' }
+        { text: 'VitePress相关语法', link: '/guide' }
       ]
     },
     {
@@ -48,6 +48,7 @@ const themeConfig = {
       collapsible: true,
       collapsed: false,
       items: [
+        // Data Structures and Algorithms
         { text: '数据结构与算法', link: '/数据结构与算法.md' },
         { text: '面试题及相关数据处理', link: '/面试题及相关数据处理.md' },
         { text: '面试题', link: '/面试题' },
@@ -71,8 +72,8 @@ const themeConfig = {
 
 export default defineConfigWithTheme({
   lang: 'zh-CN',
-  title: 'VitePress',
-  description: 'docs',
+  title: '个人学习博客',
+  description: '记录 | 学习 | 笔记 | 前端 | linux',
   base: '/',
   appearance: true,
   markdown: {

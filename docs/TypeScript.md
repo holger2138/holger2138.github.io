@@ -1,6 +1,4 @@
-# TypeScript 笔记
-
-### 深入理解typescript
+## 深入理解typescript
 
 * [typeof 操作符的使用](https://www.typescriptlang.org/play?#code/PTAEBcE8AcFMHsBmoBQBjeA7AzuUBLTReUAXlAG8VQbRMBDAW1gC5QByACQHkBVdgDTVa9AOatQAJgAcQ2qHoATRQCdY2bGyrz50FfABuhNBPaBmm0DqyoOE7QafFDbtAh-KBmNPY3QAXzm1xmRVgVNgBXANhEQlhFFC8UKDhQAEkiEnIEhGRCYhQURDC0cHwsCHgAQRUVekgACgAPNkwQxgAjIIBKNgqqyAAeJtaggD5KTzVwEJVMUABtOoBdWPiYWFAAMQKyCBWkUu7qgG5clBA7LFxQQFrTQAAolAAbWDw6rYAiAAtYO7v4F4VsM5w4COGVAAA0thldnUjvdHqBIFsZgBGAAMAikKPmfwBuGBK1AAE0ITtkJA8YkACL0cD0YlwXaQGYDNoqRYYQGgb5oanFTBIxGeCic+Dcu5OABebwAtGhMIJOfRMKIQmJTIBaOUA4absby+GhCrn0MUcWBy9F3RXK1VOQCPQVqdSgsfR-uzcctEga7nTMsLuUUsEimc0WfMZuxzUqVeJ2Itcg88OKtkLwLA6uAnB8vvBtV5sS6gW7VgAtL27cVHPOgcXitjF8hJlNpjgZ77Z3KnOMKLY1ACy1LeADoqgF4Iwau1QL1QCj+wBWUAAfinoDYSPHTpx+Y7LS2vfAA6HihHY4nU9nC6X64rK9z53zsLw9EqiKR6Mk6IAzOiACyLDvENKUHQTCmP+8rssmmDgJoCiVDml63kcpz-v2DDMFs7DKB4yHgSaUH9tAITYG8NQzu0bZgJCyCAHByoAANawJAuyALMmgA68oAZN7oLeZzfCo-x1mM0ROGoijWPILR3CEpjiZJHhxAWoAAMLwDxfF0QxuyUdx8C8SgQA)
 
@@ -16,7 +14,7 @@
 
 
 
-### Utility Types
+## Utility Types
 
 ```typescript
 interface Person {
@@ -69,7 +67,7 @@ const info: Record<'class1' | 'class2', Person[]> = {
 
 ```
 
-### 类
+## 类
 
 #### 类的语法
 
@@ -238,7 +236,7 @@ var dog = new Dog('小黄');
 dog.eat();
 ```
 
-### 函数接口（interface）
+## 函数接口（interface）
 
 TypeScript 的核心原则之一是对值所具有的结构进行类型检查。 它有时被称做“鸭式辨型法”或“结构性子类型化”。 在 TypeScript 里，接口的作用就是为这些类型命名和为你的代码或第三方代码定义契约。
 
@@ -288,7 +286,7 @@ const m1 = new MySQL({ host: 'localhost', dbname: 'shop', user: 'root', pwd: 'ro
 console.log(m1.connect());
 ```
 
-### 泛型
+## 泛型
 
 泛型是指在定义函数，类，接口的时候不指定具体的类型，在调用的时候，在指定具体的类型的一种特征；
 
@@ -326,7 +324,7 @@ var sortNumArr: Arr<number> = function (arr: number[], flag: boolean): number[] 
 console.log(sortNumArr([1, 4, 3, 100, 20], false));
 ```
 
-#### 类型别名 type 的使用
+## 类型别名 type 的使用
 
 ```typescript
 类型别名用来给一个类型起个新名字。
@@ -385,7 +383,7 @@ const person: Person = { name: 'HOU', gender: '男', age: 28 };
 
 
 
-### 装饰器（Decorators）
+## 装饰器（Decorators）
 
 装饰器是一种特殊的函数，可以用来修饰类，属性，方法。可以在不修改类，属性，方法的前提下扩展类，属性，方法的功能
 

@@ -1,155 +1,78 @@
-## git 的基本使用
+## git 总结
+
+- 基本使用
 
 ```sh
 git config --global user.name "Holger2138"
 git config --global user.email "holger2138@foxmail.com"
-查看全局 git config --list
+# 创建SSH Keys -t 类型 -C 文件描述
+ssh-keygen -t rsa -C "holger2138@foxmail.com"
+git config --global --list # 查看全局配置
 ```
 
-```sh
--t 类型 -C 文件描述
-ssh-keygen -t rsa -C "holger2138@foxmail.com"  创建SSH Keys
-```
+::: tip
+git 有三个区域 版本库 (repositoryHEAD) 、暂存区(staged/index) 、 工作区(working tree)
+:::
 
-- git reset 系列
+- git reset
 
-git 有三个区域 repository(HEAD) 暂存区(staged/index) 及工作区(working tree)
+  - 版本回退
 
-```sh
-git reset --hard HEAD^ // HEAD index workingtree ===> 全部丢弃
-git reset --soft HEAD^ // HEAD index ===> 放入暂存区    workingtree ====> 工作区
-git reset HEAD^  // 默认 --mixed HEAD index workingtree ===> 全部放到工作区
-```
-
-- 版本回退
-
-```
-git reset --hard HEAD^ 回退到上一个版本
-git reset --hard HEAD^^  git reset --hard HEAD~2 回退两个版本
-git reset --hard <commitId> 回退到指定版本
-```
-
-- 撤消修改
-
-```sh
-// win下 修改未添加到暂存区 status 红色， 添加到暂存区后 status 绿色
-// git checkout dev || git switch dev 切换分支
-
-1.场景1----已添加到暂存区想要删除修改
-git restore --staged filename ||git reset HEAD filename 暂存区的文件退还到工作区
-
-2.场景2----未添加到暂存区时想要删除修改
-git restore filename || git checkout -- filename 工作区的修改删除
-```
-
-- 删除文件
-
-```sh
-假如文件夹中有test.txt这个文件
-git add test.txt
-git commit -m 'add test.txt'
-rm test.txt 删除test.txt(此时版本库中该文件还在)
-1.场景1----确实要删除
-git rm test.txt
-git commit -m 'remove test.txt'
-2.场景2----删错了，需要找回
-git restore test.txt || git checkout -- test.txt
-```
+  ```sh
+  git reset --hard HEAD^ # HEAD index workingtree ===> 全部丢弃
+  git reset --soft HEAD^ # HEAD index ===> 放入暂存区    workingtree ====> 工作区
+  git reset HEAD^  # 默认 --mixed HEAD index workingtree ===> 全部放到工作区
+  ```
 
 - 远程仓库
 
 ```sh
 # 添加远程仓库
-git remote add origin git@gitee.com:holger2138/moba.git
-# 修改远程仓库
-git remote set-url origin git@gitee.com:holger2138/wangzhe.git
+git remote add origin repository
 
-# 推送当前分支到远程
-git push origin master:test # git push origin <本地分支名>:<远程分支名>，分支名相同可以简写 git push origin master
-# 推送当前分支至远程，并关联远程分支
+# 删除远程仓库
+git remote remove origin
+
+# 修改远程仓库
+git remote set-url origin repository
+
+# git pull 则是git fetch 和 git merge 的组合
+git pull origin branchName
+
+# 创建新分支并关联远程分支
+git switch -c branchName origin/branchName
+
+# 推送分支到远程 <本地>:<远程> 分支名相同可以简写 git push origin master
+git push origin master:master
+
+# 推送分支至远程，并关联远程分支
 git push -u origin master
 
-# 删除远程分支
-git push -d origin branchName # origin 可省略
+# 删除远程分支 origin 可省略
+git push -d origin branchName
 
 # 查看分支关联信息
 git branch -vv
 
-# 本地分支与远程分支关联
-git branch -u origin/master master # git branch --set-upstream-to=origin/master master
-# 本地分支与远程分支关联
-git branch --unset-upstream branchName # 如是当前分支（branchName）可省略
+# 本地分支与远程分支关联 git branch --set-upstream-to=origin/master master
+git branch -u origin/master master
+# 本地分支与远程分支关联 如是当前分支（branchName）可省略
+git branch --unset-upstream branchName
 
 # 查看当前远程地址
 git remote -v
 ```
 
-- 分支
+- git add
 
-  1. 创建与合并分支
-
-     ```sh
-     git switch -c dev || git checkout -b dev 创建dev分支 并切换到dev分支
-     相当于
-     git branch dev 创建dev分支
-     git switch dev || git checkout dev 切换到dev分支
-
-     合并分支
-     git merge dev // 当前处于master分支 合并dev分支的内容
-
-     git branch 查看当前分支 *表示现现处于某分支
-     git branch -d dev 删除分支（合并后的分支删除）
-     git branch -D branchName 未合并的分支进行强行删除
-     ```
-
-  2. 解决冲突
-
-  3. bug 分支
-
-     ```
-     git branch    master dev issue-101
-     如果dev 上有未提交的修改的内容，并且你此时并不想提交
-     git stash 把内容冻结
-     在issue-101上修补bug并提交给(提交的id),最后合并到master分支 后在dev上
-     也应用这个bug
-     git cherry-pick 提交id
-     继续修改以前的内容
-     git stash apply stash@{0}，git stash drop
-     或者
-     git stash pop
-     git stash list // 查看冻结的任务
-     ```
-
-- 拉取远程分支
-
-  1. 拉取远程分支
-
-     ```
-     git fetch origin branchName // 如果远程文件有较新的文件，还需要手动合并， git pull 则是git fetch 和git merge 的组合
-     git switch -c branchName origin/branchName
-     ```
-
-  2. 删除远程分支
-
-     ```
-     git push origin -d branchName
-     ```
-
-  3. 关联远程分支
-
-     ```
-     git push --set-upstream origin branchName
-     git remote rm origin // 删除关联信息
-     ```
-
-- git add 的用法
-
-  ```sh
-  git add . // 修改的 新增的都会被提交到暂存区，删除的不会被提交
-  git add -u // git add --update 仅仅是被修改的
-  git add -A // git add --all 上面的两个命令， 修改的 新增的 删除的 都会被提交
-  git commit -am // 仅提交已跟踪被修改的
-  ```
+```sh
+# 修改(modified)  删除(deleted)  未跟踪(untracked)
+git add -u # --update  modified deleted
+# v2 可使用 (git add --ignore-removal .) 替代
+git add . # v1版本 untracked modified  v2版本等同于 git add -A
+git add -A # --all modified deleted untracked
+git commit -am # 修改与删除 不包含untracked
+```
 
 - git commit --amend
 
@@ -167,16 +90,19 @@ git rebase -i --root
 # scene 4 当我们想合并连续的提交时可以使用
 git rebase -i commit<start> commit<end> #  前开后闭 不包含start 会丢弃区间后面的内容
 git rebase -i commit^<start> commit<end> # 前闭后闭 start end 都包含 会丢弃区间后面的内容
-
-# scene 5
-git rebase branch
 ```
 
-- `git revert <commit>`
+- git revert
 
 > 生成一个新的 commit 用来撤消 老的 commit 的修改，比 git reset 更加灵活，因为其保存修改记录于 commit 中，可以防止项目丢失历史记录
 
-- `git cherry-pick commitId`
+- git log 自定义
+
+```sh
+git log --format="%Cred%h  %CresetCD:%Cgreen%cI  %CresetAD:%Cgreen%aI  %Cblue%an  %Cgreen%s  %Cred%D"
+```
+
+- git cherry-pick commitId
 
 ```sh
 git cherry-pick commitId # 摘取指定的 commitId
@@ -187,25 +113,76 @@ git cherry-pick branch # 摘取最新的 commitId
 git cherry-pick ..branch # 摘取所有
 ```
 
-- git merge dev => fast-forward
+- git rebase
 
-<img src="https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20211216115748616.png" alt="image-20211216115748616"  />
+  - 分支合并
 
-- git merge feature1 => conflict
+  ::: details 通过 shell 脚本生成提交纪录
+  <!-- <<< @/snippets/rebase.sh -->
 
-![image-20211216121322521](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20211216121322521.png)
+  ```sh
+  # 可能需要代理 -x
+  curl -s https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/snippets/rebase.sh | sh
+  ```
 
-- git log
+  :::
 
-![image-20211216121724066](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20211216121724066.png)
+  master a b c d f h
 
-- 删除 feature1 分支后
+  dev a b c d e g 所有的提交按 a-h 顺序提交
 
-![image-20211216122234232](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20211216122234232.png)
+  ```sh
+  git rebase mater
+  # 合并 dev 分支 git rebase dev | git merge dev;
+  git switch master
+  git merge dev
+  ```
 
-- 变基
+  merge 的提交总是按照时间为顺序 a b c d e f g 'fix conflicts' 并会产生一次新的提交。
 
-![image-20211216171020484](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20211216171020484.png)
+  dev 分支把自己的异（e g）拷贝一份副本, 基变为 master ，再拼接，最后的提交顺序 a b c d f h e g
+
+  ![image-20221202132537565](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20221202132537565.png)
+
+  ::: details 总结
+  对比 merge，
+
+  merge 优点: 可以追溯纪录 所有的 hash 值不会改变,但是有冲突时会多一条提交纪录
+
+  rebase 优点: 合并后 commit 问题在最前面，commit history 保持一条直线，但 hash 值也会随之更改
+  :::
+
+  - 压缩提交
+
+  ```sh
+  # 默认是 commit-hash的下一个 修改交互信息中的 pick 为 e， 保存
+  git rebase -i <COMMIT-HASH>
+  git rebase --continue
+  git rebase -i --root # 从第一个提交开始
+  ```
+
+  - 修改提交信息
+
+  ```sh
+  # 修改最近一次提交
+  git commit --amend --date="2022-03-01T09:50:00"
+  # 修改某次提交 CommitDate AuthorDate  Github是按照 commitDate 来显示的
+  GIT_COMMITTER_DATE="2022-07-14T19:31:03" git commit --amend --date="2022-07-14T19:31:03" --no-edit
+  # 可以重置用户名为全局 会改变commitID
+  git commit --amend --reset-author --no-edit
+  ```
+
+::: danger rebase 小技巧
+
+master 远程分支和本地分支都分别有更新时可以通过三种方法实现推送最新代码
+
+- 1：在 master 分支 `git pull --rebase`来把自己本地的异拷贝一份副本（commmitId 不同），基变成远程仓库的 HEAD，然后解决冲突，就完成拼接了
+- 2：在 dev 分支 `git pull --rebase origin master` => `git switch master` => `git merge dev` => `git push`
+- 3：在 dev 分支 `git pull --rebase origin master` => `git push origin dev:master`
+
+自己的本地提交总在最前，commitID 也会随之变化
+
+:::
 
 ## 腾讯云服务器使用总结
 
@@ -560,33 +537,7 @@ $$('#jSearchHeroDiv li').map(item => {
 ```json
 "prettier.useEditorConfig": false, // 不使用.editorConfig文件
 "prettier.semi": false, //
-"prettier.singleQuote": true, // 使用单引号
+"prettier.singleQuote": true, // 使用单引
 "prettier.trailingComma": "none", // 禁止加逗号
 "prettier.useTabs": false, // 不使用tab
-```
-
-## Git 使用技巧
-
-::: tip log 自定义
-
-```sh
-git log --format="%C(auto) %h %Cred %an %Creset %s %Cblue %ai" -3
-```
-
-:::
-
-- 修改提交时间
-
-```sh
-# 修改最近一次提交
-git commit --amend --date="2022-03-01T09:50:00"
-
-# 修改某次提交
-git rebase -i <COMMIT-HASH>^ # 修改交互信息中的 pick 为 e， 保存
-# CommitDate AuthorDate  Github是按照 commitDate 来显示的
-GIT_COMMITTER_DATE="2022-07-14T19:31:03" git commit --amend --date="2022-07-14T19:31:03" --no-edit
-git rebase --continue
-
-git rebase -i --root # 从第一个提交开始
-git commit --amend --reset-author --no-edit # 可以重置用户名为全局
 ```

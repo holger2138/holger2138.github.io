@@ -479,4 +479,16 @@ curl -sx $proxy https://raw.githubusercontent.com/holger2138/holger2138.github.i
 curl -sx $proxy https://raw.githubusercontent.com/holger2138/holger2138.github.io/main/docs/test.sh | sh /dev/stdin 123
 ```
 
-## 快捷键
+## scp
+
+```sh
+# linux 文件传入 Windows
+# 普通 windows 用户可能需要开启 openssh 服务 
+# 终端管理员执行 net start sshd
+scp file username@ip:/c:/
+
+# 下载 linux 文件到时本地
+# 对于 openwrt 可能会提示以下错误
+# sh: /opt/libexec/sftp-server: not found scp: Connection closed 需要加 -O
+scp admin@192.168.1.50:/tmp/home/root/dump.txt ./Desktop/test.txt
+```
