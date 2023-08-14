@@ -325,6 +325,8 @@ lsss 2>> a.txt # 标准错误重定向到 a.txt
 # 输入重定向
 cat < a.txt > b.txt # 将 a 文本内容输入到b中 等同于 cat a.txt > b.txt
 cat < a.txt >> b.txt # 将 a 文本内容追加到 b 文本中
+# 对于中文乱码的情况
+ipconfig //displaydns | iconv -f GB2312 -t UTF-8 > dnsCache.txt
 ```
 
 #### here document
@@ -401,11 +403,12 @@ echo -e "hello\nworld" | cat | wc -l # 终端输出2
 # l 显示长信息 h 显示可读性的文件大小 i ==> inode
 ```
 
-- tar
+-  function Vue(options) {  if (process.env.NODE_ENV !== 'production' && !(this instanceof Vue)) {    warn('Vue is a constructor and should be called with the `new` keyword');  }  this._init(options);}// 实例方法 __initinitMixin(Vue);// 实例方法 $data $props $set $delete $watchstateMixin(Vue);// 实例方法 $on $once $off $emiteventsMixin(Vue);// 实例方法  _update（没写错）lifecycleMixin(Vue);// 实例方法 $nextTick _render _o _n _s _l _t _q _i _m _f _k _b _v _e _urenderMixin(Vue);​export default Vue;js
 
 ```sh
 # -z gzip -c 创建 -x 解压 -v verbose显示处理过程 -f 备份文件 -t 显示归档文件的内容（不会解压缩）
 # --remove-files 压缩文件的同时删除源文件(复数说明不能用于 删除归档) -C 解压后放入指定目录
+# 第一位置永远放 tar.gz 文件，不管是归档还是压缩
 ```
 
 - ln

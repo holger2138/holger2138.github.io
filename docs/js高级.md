@@ -1,3 +1,67 @@
+
+
+## npm 相关理解
+
+- npm init
+
+![image-20221125151027144](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20221125151027144.png)
+
+```sh
+npm init ===> npm create
+npx ===> npm exec
+
+npm init vue ===> npm create vue ===> npm exec create-vue ===> npm x create-vue ===> npx create-vue
+npm init vite ===> npm create vite ===> npm exec create-vite
+
+@scope 就是可能这个包为 例如 npm init @config/vue 会去找 create-vue 下 config 的最后一个版本 @config/create-vue@latest
+
+npm init <@scope> (same as `npx <@scope>/create`) ===> npm init vue || npx vue/create
+npm init [<@scope>/]<name> (same as `npx [<@scope>/]create-<name>`) ===> npm init vue/vue || npx vue/create-vue
+```
+
+- npx
+
+```sh
+npx tsc --version // 首先当前项目 node_modules  => 全局 => 网络 => 网络如果找不到 可以通过 -p 指定包来执行
+npx -p typescript tsc --version
+```
+
+- workspaces
+
+```sh
+npm init -y -w packages/b --workspace=packages/b  # workspaces: ['packages/a', 'packages/b']
+# npm init -y -w=./packages/a -w=./packages/b
+npm init -y -w a -w b  # workspaces: { packages: ['a', 'b'] } 同上一样，只不过项目在当前根项目 a b c 而非上面的packages/a
+npm init vite ./ -w packages/a # 以 packages/a作为项目，并初始化
+
+npm init -y monorepo-demo
+npm init -y -w ./packages/backend
+npm i express -S # 在根中 安装express
+npm i lodash -w a # 在子项目a 中安装lodash
+npm i whistle -w b # 在子项目b 中安装whistle
+npm run test -w a # 在当前工作区 运行子项目a中的命令 等同于 cd packages/a && npm run test
+
+
+npm run test --workspace=a --workspace=b #在当前工作区同时运行子项目a b 中的命令 npm run start -w=a -w=b
+npm run test --workspaces #  简写当前工作区同时运行子项目a b  npm run test -ws 当某个子项目没有 test 会对当前子项目报错提示 可通过npm run start -ws --if-present 进行跳过
+```
+
+- 常用全局命令
+
+```sh
+npm outdated -g # 检查全局包是否有更新
+npm list -g --depth 0 # 查看全局安装包`
+npm update package -g # 更新全局包
+```
+
+- 常用技巧
+
+```sh
+npm config --global --list # 获取全局配置
+git config --global --unset http.proxy # 配置全局代理 --local 也行，注意影响他人
+git config --global --unset http.sslverify # 禁止 ssl 校验
+```
+
 ## 正则相关
 
 <img src="https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20200826105347640.png"/>
@@ -16,13 +80,10 @@ var prices = { p1: '$1.99', p2: '$9.99', p3: '$5.00' };
 var template = '<span id="p1"></span>' + '<span id="p2"></span>' + '<span id="p3"></span>';
 const reg1 = /(<span\sid=")(?<id>.*?)(">)(<\/span>)/g;
 // match 匹配的子串 pn => 匹配捕获组 offst => index string => 原字符串 namedCaptrueGroup => 命名捕获组
-const d = template.replace(
-  reg1,
-  function (match, p1, p2, p3, p4, offset, string, namedCaptureGroup) {
-    // console.log(arguments);
-    return p1 + p2 + p3 + prices[namedCaptureGroup.id] + p4;
-  }
-);
+const d = template.replace(reg1, function (match, p1, p2, p3, p4, offset, string, namedCaptureGroup) {
+  // console.log(arguments);
+  return p1 + p2 + p3 + prices[namedCaptureGroup.id] + p4;
+});
 // <span id="p1">$1.99</span><span id="p2">$9.99</span><span id="p3">$5.00</span>
 console.log(d);
 ```
@@ -534,7 +595,7 @@ function jsonp(options) {
 }
 ```
 
-​
+
 
 ## 原型的深入理解
 
@@ -675,7 +736,7 @@ console.log(index);
 
 `requirejs`
 
-​
+
 
 ## Iterator
 
@@ -687,9 +748,7 @@ function makeIterator(arr) {
   let nextIndex = 0;
   return {
     next() {
-      return nextIndex < arr.length
-        ? { value: arr[nextIndex++], done: false }
-        : { value: undefined, done: true };
+      return nextIndex < arr.length ? { value: arr[nextIndex++], done: false } : { value: undefined, done: true };
     }
   };
 }
@@ -968,131 +1027,85 @@ console.log(obj1);
 console.log(objProxy);
 ```
 
-## npm 相关理解
-
-- npm init
-
-![image-20221125151027144](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20221125151027144.png)
-
-```sh
-npm init ===> npm create
-npx ===> npm exec
-
-npm init vue ===> npm create vue ===> npm exec create-vue ===> npm x create-vue ===> npx create-vue
-npm init vite ===> npm create vite ===> npm exec create-vite
-
-@scope 就是可能这个包为 例如 npm init @config/vue 会去找 create-vue 下 config 的最后一个版本 @config/create-vue@latest
-
-npm init <@scope> (same as `npx <@scope>/create`) ===> npm init vue || npx vue/create
-npm init [<@scope>/]<name> (same as `npx [<@scope>/]create-<name>`) ===> npm init vue/vue || npx vue/create-vue
-```
-
-- npx
-
-```sh
-npx tsc --version // 首先当前项目 node_modules  => 全局 => 网络 => 网络如果找不到 可以通过 -p 指定包来执行
-npx -p typescript tsc --version
-```
-
-- workspaces
-
-```sh
-npm init -y -w packages/b --workspace=packages/b  # workspaces: ['packages/a', 'packages/b']
-# npm init -y -w=./packages/a -w=./packages/b
-npm init -y -w a -w b  # workspaces: { packages: ['a', 'b'] } 同上一样，只不过项目在当前根项目 a b c 而非上面的packages/a
-npm init vite ./ -w packages/a # 以 packages/a作为项目，并初始化
-
-npm init -y monorepo-demo
-npm init -y -w ./packages/backend
-npm i express -S # 在根中 安装express
-npm i lodash -w a # 在子项目a 中安装lodash
-npm i whistle -w b # 在子项目b 中安装whistle
-npm run test -w a # 在当前工作区 运行子项目a中的命令 等同于 cd packages/a && npm run test
 
 
-npm run test --workspace=a --workspace=b #在当前工作区同时运行子项目a b 中的命令 npm run start -w=a -w=b
-npm run test --workspaces #  简写当前工作区同时运行子项目a b  npm run test -ws 当某个子项目没有 test 会对当前子项目报错提示 可通过npm run start -ws --if-present 进行跳过
-```
+## Promise
 
-- 常用全局命令
-
-```sh
-npm outdated -g # 检查全局包是否有更新
-npm list -g --depth 0 # 查看全局安装包`
-npm update package -g # 更新全局包
-```
-
-- 常用技巧
-
-```sh
-npm config --global --list # 获取全局配置
-git config --global --unset http.proxy # 配置全局代理 --local 也行，注意影响他人
-git config --global --unset http.sslverify # 禁止 ssl 校验
-```
-
-## Promise/A+规范
+[Promises/A+](https://promisesaplus.com/)
 
 ::: details 手写 Promise
 <<< @/snippets/promise.js
 :::
 
-- 对于异步才需要回调函数（重点理解)
+- 场景考虑
 
 ```js
 const promise = new MyPromise((resolve, reject) => {
-  // throw new Error('执行器错误')
-  resolve('success');
+  resolve('success1');
+  // reject('error1');
+  // throw new Error('error1');
+  // setTimeout(resolve, 0, 'success1');
 });
-promise
-  .then(
-    value => {
-      console.log(1);
-      console.log('resolve', value);
-      return 'returnValue';
-    },
-    reason => {
-      console.log(2);
-      console.log(reason);
-    }
-  )
-  .then(
-    value => {
-      console.log(3);
-      console.log(value);
-    },
-    reason => {
-      console.log(4);
-      console.log(reason);
-    }
-  );
+
+const promise2 = promise.then(
+  value => {
+    console.log('then1 value=====> ', value);
+    // return value + 2;
+    // return promise2;
+    // return null;
+    // return new MyPromise(resolve => resolve(value + 2));
+    // return { name: 'HJ' };
+    // return new MyPromise((resolve, reject) => {
+    //   resolve(
+    //     new MyPromise((resolve, reject) => {
+    //       resolve(value + '2');
+    //     })
+    //   );
+    // });
+
+    return new MyPromise((resolve, reject) => {
+      resolve({
+        name: 'HJ',
+        get then() {
+          // throw  'error'
+          return (resolvePromise, rejectPromise, anotherFn) => {
+            // throw 'error';
+            // resolvePromise(value + 2);
+            // resolvePromise(value + 3);
+            // rejectPromise('error1');
+            // anotherFn(123456);
+            // setTimeout(() => {
+            //   throw 'dsdfasd'; // 这里 throw 不会被promise 捕获
+            //   resolvePromise(value + 2);
+            // }, 5000);
+
+            // 以下调用 rejectPromise ，返回 promise 实例 ===> 调用 reject 不会进行递归调用
+            resolvePromise(
+              new MyPromise((resolve, reject) => {
+                // throw 'dsafdsfasd';
+                setTimeout(reject, 1000, 456);
+              })
+            );
+          };
+        }
+      });
+    });
+  },
+  reason => {
+    console.log('then1 reason=====> ', reason);
+  }
+);
+
+// promise2.then(
+//   value => {
+//     console.log('then2 value=====> ', value);
+//   },
+//   reason => {
+//     console.log('then2 reason=====> ', reason);
+//   }
+// );
+
+promise2.catch(reason => {
+  console.log(reason);
+});
 ```
-
-- 解析执行顺序
-
-  1. xxxxxxxxxx function Vue (options) {  if (process.env.NODE_ENV !== 'production' &&    !(this instanceof Vue)) {    warn('Vue is a constructor and should be called with the `new` keyword') }  this.\_init(options)}// 实例方法 \_\_initinitMixin(Vue)// 实例方法 $data $props $set $delete $watchstateMixin(Vue)// 实例方法 $on $once $off $emiteventsMixin(Vue)// 实例方法 \_update（没写错）lifecycleMixin(Vue)// 实例方法 $nextTick \_render \_o \_n \_s \_l \_t \_q \_i \_m \_f \_k \_b \_v \_e \_urenderMixin(Vue)​export default Vuejavascript
-
-```js
- p1 {id: 1, promiseResult: "success", promiseState: "fulfilled", callbacks: Array(0)}
-
-```
-
-- 2. dfdsdasd
-
-```js
-{id: 2, promiseResult: undefined, promiseState: "pending", callbacks: Array(0)}
-```
-
-3. 执行第二个 then 方法 返回 p3 , this 指向 p2 把 p3 的 executor 追加到 p2 的 callbacks
-
-```js
-// p2 结构如下
-{id: 2, promiseResult: undefined, promiseState: "pending"
-callbacks: [{
-  onfulfilled: value => {console.log(3);console.log(value);},
-  onrejected: reason => {console.log(4);console.log(reason);}
-}]
- // p3结构如下
- {id: 3, promiseResult: undefined, promiseState: "pending", callbacks: Array(0)}
-```
-
-4.  此时宏任务执行完毕 开始执行待微任务 微任务根据 p1 的状态开始调用每一个 then 方法中的相应方法 并将返回值 与 p2 及构造函数进行对比 如不相同 则调用 resolve 方法

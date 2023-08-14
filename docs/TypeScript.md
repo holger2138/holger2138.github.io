@@ -472,7 +472,5 @@ class Page {
 }
 ```
 
-
-
-
+![关于装饰器的执行顺序](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/Snipaste_2023-05-10_15-08-55.png)
 

@@ -11,7 +11,7 @@ const themeConfig = {
     { text: 'Configs', link: 'https://vitepress.vuejs.org/config/introduction' },
     { text: 'Changelog', link: 'https://github.com/holger2138/docs-vitepress' }
   ],
-  socialLinks: [{ icon: 'github', link: 'https://github.com/holger2138/docs-vitepress' }],
+  socialLinks: [{ icon: 'github', link: 'https://github.com/holger2138/holger2138.github.io' }],
   sidebar: [
     {
       text: '前端',
@@ -51,16 +51,16 @@ const themeConfig = {
         // Data Structures and Algorithms
         { text: '数据结构与算法', link: '/数据结构与算法.md' },
         { text: '面试题及相关数据处理', link: '/面试题及相关数据处理.md' },
-        { text: '面试题', link: '/面试题' },
-        {
-          text: '相关网站',
-          items: [
-            {
-              text: '百度',
-              link: 'https://www.baidu.com'
-            }
-          ]
-        }
+        { text: '面试题', link: '/面试题' }
+        // {
+        //   text: '相关网站',
+        //   items: [
+        //     {
+        //       text: '百度',
+        //       link: 'https://www.baidu.com'
+        //     }
+        //   ]
+        // }
       ]
     }
   ],
@@ -77,7 +77,7 @@ export default defineConfigWithTheme({
   base: '/',
   appearance: true,
   markdown: {
-    theme: { light: 'dracula-soft', dark: 'monokai' },
+    theme: { light: 'vitesse-light', dark: 'monokai' },
     lineNumbers: true,
     config(md) {
       md.use(mathjax3);
@@ -98,5 +98,5 @@ export default defineConfigWithTheme({
     }
   },
   themeConfig: themeConfig,
-  lastUpdated: true
+  // lastUpdated: true
 });

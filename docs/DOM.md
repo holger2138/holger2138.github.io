@@ -1,4 +1,4 @@
-### 选择器
+## 选择器
 
 [参考链接](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Selectors)
 
@@ -20,49 +20,77 @@
 | 分组选择器_[选择器列表](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Selector_list) | div, p {}          |
 | 交集选择器(叠加样式)                                         | div.container {}   |
 
+## 外边距合并
+
+- 同一层相邻元素之间
+
+```html
+<style>
+    p:nth-child(1) {
+        margin-bottom: 13px;
+    }
+    p:nth-child(2) {
+        margin-top: 87px;
+    }
+</style>
+
+<p>下边界范围会...</p>
+<p>...会跟这个元素的上边界范围重叠。</p>
+```
+
+- 没有内容将父元素和后代元素分开
+
+- 空的块级元素
+  
+> 块元素未设置 `border || padding || height` 或没有内容时，上边界 `margin-top` 直接贴到元素下边界 `margin-bottom` 时会发生边界折叠
+
+```html
+<style>
+    p {
+        margin: 0;
+    }
+    div {
+        margin-top: 13px;
+        margin-bottom: 87px;
+    }
+</style>
+
+<p>上边界范围是 87 ...</p>
+    <div></div>
+<p>... 上边界范围是 87</p>
+```
+
+## [BFC](https://www.w3.org/TR/CSS2/visuren.html#block-formatting)
 
 
-#### nth-child 与 nth-of-type区别
+>Floats, absolutely positioned elements, block containers (such as inline-blocks, table-cells, and table-captions) that are not block boxes, and block boxes with 'overflow' other than 'visible' (except when that value has been propagated to the viewport) establish new block formatting contexts for their contents.
 
-`nth-child` 执行过程=> 会把所有的盒子都排列序号，之后看  :nth-child 前面跟的元素 如果匹配成功则在执行
+浮动，绝对定位的元素，不是块级元素的块容器（例如 inline-blocks ，table-cells 和 table-captions）及块级元素的 overflow 属性不是 visible 的，会创建一个新的块级上下文为它们的内容
+>In a block formatting context, boxes are laid out one after the other, vertically, beginning at the top of a containing block. The vertical distance between two sibling boxes is determined by the 'margin' properties. Vertical margins between adjacent block-level boxes in a block formatting context collapse.
 
-`nth-of-type` 执行过程 => 先看 :(冒号)前面的跟的是哪种类型的元素，然后把属于这种类型的进行排列序号
+在块级格式化上下文中，盒子的布局是一个接着一个垂直的排列，从[包含块](#包含块)的顶部开始，两个同级盒子之间，垂直距离由 margin 属性决定。在块级格式化上下文中，相邻的块级盒子的垂直外边距会折叠
 
+>In a block formatting context, each box's left outer edge touches the left edge of the containing block (for right-to-left formatting, right edges touch). This is true even in the presence of floats (although a box's line boxes may shrink due to the floats), unless the box establishes a new block formatting context (in which case the box itself may become narrower due to the floats).
 
+在BFC中，每个盒子的左外边缘接触包含块的左边缘（对从右到左的的格式，右边缘接触），即使有浮动的情况下也是如此（尽管盒子的行盒可能因为浮动而缩小），除非这个盒子建立一个新的BFC（在这种情况下盒子自身可能因为浮动而变窄）
 
+BFC是一个独立的渲染区域，可以把BFC理解成一个封闭的容器，内部的元素无论怎么变动都不会影响外部元素
+- 就是一个块级元素，块级元素会在垂直方向一个接着一个排列
+- 页面中一个隔离独立容器，容器内部的标签不会影响到外部标签
+- 容器不会与浮动的窗口发生重叠
+- 属于同一个 BFC 的两个相邻元素外边距可能会发生[折叠](#外边距合并)，垂直方向的距离由两个元素中margin较大的值决定
+- 计算 BFC 高度时浮动元素也会参与计算
 
+可以解决的问题
+- 可以阻止元素被浮动元素覆盖 两栏布局
+- 能够解决，子元素设置浮动，父元素高度塌陷的问题 触发bfc后父元素的高度会被撑开，也是就是说会产生清除浮动的效果
+- 可以解决 margin 边距合并的问题
 
+## 浮动
 
-
-* offset
-
-> `offsetLeft` | `offsetTop` 无法获取能过 `translate` 移动的真实偏移
->
-> 
-
-
-
-* client
-* scroll
-
-
-
-
-
-
-
-### 网页布局
-
-
-
-#### 浮动
-
-> 理解 `BFC` ：其实就是创建一块独立的区域，把内部元素的布局与外部元素隔开，不管内部如何变动，都不会影响到外部元素。并且会阻止内部元素[外边距合并](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing)。
->
 > 1. 浮动元素脱离标准流
 > 2. 浮动元素一行显示，除非一行显示不了，才进行换行
 > 3. 添加了浮动后，浮动元素具有行内块特性(也就意味着如果不给宽度，元素的宽度由其内容的宽度决定)
->
 > 浮动只会影响后续盒子排列，如果后面的盒子有浮动，不能压到前面浮动的盒子，如果不浮动，后面浮动的例子不能小于其高度
 
 
@@ -158,7 +186,7 @@ clear: both;
 
 
 
-#### 定位
+### 定位
 
 1. 静态定位 static
    
@@ -182,7 +210,7 @@ clear: both;
 
 
 
-#### FLEX布局
+### FLEX布局
 
 > `justify-content` 和 `align-content` 是控制flex项目（flex items）在 **主轴** 和 **”多条主轴“在交叉轴** 的对齐方式，所以当主轴为水平时，交叉轴必须有多行 `align-content` 才会有效。反之同理！作用于 flex容器（flex container）。[^1]
 >
@@ -215,7 +243,7 @@ clear: both;
 
 
 
-#### GRID布局
+### GRID布局
 
 ##### 作用于 `grid` 容器
 
@@ -267,7 +295,7 @@ clear: both;
 
 
 
-* `grid-template-areas`
+* xxxxxxxxxx ​js
 
 
 
@@ -433,95 +461,69 @@ clear: both;
 </div>
 ```
 
-
-
-
-
-
-
 ##### 作用于 `gird` 子项
 
-
-
-#### line-height 与 vertical-align的理解
-
-* line boxes 的高度=`font-size` *` line-height`
-* `line-height`当父元素为百分比和em单位时，子元素会继承行高，子元素的行高（行高= 父元素的`font-size`*父元素的`line-height`）
-* 数字值则会根据子元素的`font-size`* `line-height`进行重新计算
-* 行内块元素看不出行高，但是可以通过其父元素，确定其行高，也就是说行内元素设置行高作用于父元素
-
-<!-- .parent 内容的line-height 为 16px*1.5 =24px -->
-
-<!-- line-height: 1.5 (即40*1.5=60px) .son的高度为 60*3+2px(border)= 182px-->
-
-<!-- line-height: 1.5em (即16*1.5=24px) .son的高度为 24*3 +2px =74px -->
-
-<!-- line-height: 150% (即16*1.5=24px) .son的高度为 24*3+2px = 74px -->
-
-```html
-<style>
-    .parent {
-      background-color: #f0f0f0;
-      line-height: 1.5;
-    }
-
-    .son {
-      border: 1px solid blue;
-      font-size: 40px;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="parent">
-    我是父级元素，我的font-size为16px，line-height为150%
-    <div class="son">
-      我是子级元素，我的font-size为40px，继承line-height为150%
-      我是子级元素，我的font-size为40px，继承line-height为150%
-      我是子级元素，我的font-size为40px，继承line-height为150%
-      我是子级元素，我的font-size为40px，继承line-height为150%
-    </div>
-  </div>
-</body>
-```
+[^1]:  grid布局中 `place-content` 是 `align-content` 与 `justify-content`的复合写法。 `place-items` 是 `align-items` `justify-items` 的复合写法。flex布局中都可以使用
 
 
 
-### 常规属性
 
-#### font
+## font
 
 rem 相对于根元素（即 `html` 元素 默认为 16px ）、 em 相对于父元素
 
+## background
+
+属性简写： `background: color image position/size origin clip repeat`
+
+* `background-attachment` 默认值： `scroll`  背景相对元素本身是固定的（即使元素是滚动的）
+  
+    `local` 相对于元素的内容（文字）固定（overflow: auto)
+  
+    `fixed` 相对于视口(可视区域)固定，background-position也是相对于可视区域了（所以center 可能看不见）
+
+* `background-image || background-color` 默认绘制区域都是 `border-box` 
+
+    当设置 `background-repeat` 非 no-repeat 后，`background-image` 绘制区域 padding-box
+
+    层级关系 ` background-color background-image border ` `border`
+
+* `background-position` 作用于背景图片
+  
+    根据 `background-origin` 绘制区域的宽高进行算
+
+    实际移动像素 = （绘制区域宽度 - 图片宽度） * 百度比 
+
+    绘制区域右移百分比 = 绘制区域宽度  / （绘制区域宽度 - 图片宽度），刚好移出绘制区域
+  
+* `background-size` 作用于背景图片
+
+    `contain` 满足最小边，背景区可能有空白。 `cover` 满足最大边，背景图片可能显示不全。
+
+    `percentage` 根据`background-origin` 绘制区域宽高进行计算, 实际像素 = 绘制区域宽度 * 百分比。
+
+* `background-origin` 作用于背景图片 默认值： `padding-box`
+  
+    规定背景图片的起始位置 默认值 padding-box  背景图片可能会被 clip 剪裁*
+    
+    简写属性，若只写一个属性，则表示 `background-origin` 和 `background-clip` 同为这个属性值，如果是两个值，第一个为 origin ,第二个为 clip
+
+* `background-clip` 作用于背景图片及背景颜色 默认值： `border-box`
+  
+    设置元素的背景（背景颜色，背景图片）,只是粗暴的剪切
+    
+    `-webkit-background-clip` 比 `background-clip` 多个属性值 `text` , 背景变为文字颜色，需配合 `color: transparent`
+
+::: info
+`background-origin` 与 `background-clip` 的区别（border 设为虚线，效果明显）
+
+值： `border-box padding-box content-box`
+:::
+
+### gradient
 
 
-#### `vertical-align` 与 `line-height`
-
-
-
-
-
-> <code>[x-height](https://zh.wikipedia.org/zh-cn/X%E5%AD%97%E9%AB%98)</code> 是指字母的基本高度，精确的说就是基线（`basheline`）和主线（`mean line` 又称中线 `median`）之间的距离
->
-> `ascender` 是指超过主线笔画的部分，也就是比 `x-height` 还要高的部分
->
-> `descender` 是指字母向下延伸超过基线的笔画部分，也称为**下延部**
->
-> `cap height` 是指位于基线以上的大写字母的高度
->
-> `vertical-align: middle` 指的是基线往上1/2 `"x-height"`高度。我们可以近似脑补成字母`x`交叉点那个位置。 跟 `median` 不是一个意思。
-
-
-
-
-
-<img src="https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/x-height.svg" alt="x-height" style="zoom:400%;" />
-
-
-
-
-
-#### shadow
+## shadow
 
 `box-shadow: h-shadow v-shadow blur spread color inset(默认outset不用写)`
 
@@ -529,57 +531,15 @@ rem 相对于根元素（即 `html` 元素 默认为 16px ）、 em 相对于父
 
 水平阴影位置 垂直阴影位置 模糊程度(距离) 阴影尺寸 阴影颜色 外阴影(默认)
 
-#### background
+`text-shadow: `
 
-`background: #008080 url() background-position/background-size background-origin background-clip background-repeat`
-
-* `background-attachment`
-  
-  默认值： `scroll`  背景相对元素本身是固定的（即使元素是滚动的）
-  
-  `local`相对于元素的内容（文字）固定（overflow: auto)
-  
-  `fixed` 相对于视口(可视区域)固定，background-position也是相对于可视区域了（所以center 可能看不见）
-
-* `background-position`
-  
-  百分比值: （盒子宽度 - 图片宽度）  * 百度比 = 偏移像素
-  
-  水平位置：（800 -500）* 50% = 150px 此时图片居中显示
-
-* `background-size`
-  
-  百分比是相对于盒子的大小，根据`background-origin`的宽高进行计算，默认是padding+content区域百分比
-  
-  如果只有一个值的话，另一边自适应（保持长宽比）
-
-* `background-origin`**规定背景图片的绘制区域(即图片右上角的起始位置)**
-  
-      默认值： `padding-box`
-  
-  简写属性时 如果只有一个属性 则表示 background-origin 和background-clip 都为这个属性值，如果是两个值，第一个为origin ,第二个为clip
-
-* `background-clip`**设置元素的背景（背景颜色，背景图片）,只是粗暴的剪切**
-  
-      默认值：`border-box`
-  
-  `-webkit-background-clip: text;`背景变为前景色
-
-* background-origin` 与 `background-clip` 的区别（测试时border取虚线，效果明显）
-  
-      值： `border-box padding-box content-box`
-      
-      `background-clip` 还有一个特殊值  `text` 即把背景色（图片）剪裁为文字颜色
-
-#### transition
+## transition
 
 * `transition: transition-property transition-duration transition-delay transition-timing-function`
   
   如果只有一个时间值，默认是`duration`
   
   `timing-function` linear(匀速) ease（先加速后减速） ease-in
-
-
 
 ```html
 <!DOCTYPE html>
@@ -617,35 +577,79 @@ rem 相对于根元素（即 `html` 元素 默认为 16px ）、 em 相对于父
 
 transition-timing-function: 
 
-ease-默认值，速度由快到慢
+    ease-默认值，速度由快到慢
+    
+    linear-匀速
+    
+    ease-in：加速
+    
+    ease-out：减速
+    
+    ease-in-out：先加速再减速
 
-linear-匀速
+## transform
 
-ease-in：加速
+    transform: rotate(45deg);顺时针旋转
+    
+    transform:skew(45deg, 10deg); 
+    
+    skew(水平方向（右-正），垂直方向（下为正）)
+    
+    transform: scale(1.5，1.2); 水平，垂直都绽放
+    
+    如果只写一个参数，就是等比缩放
+    
+    transform:translate(x,y);
+    
+    transform：translateX(50%):走自己宽度的一半
 
-ease-out：减速
 
-ease-in-out：先加速再减速
+## line-height 与 vertical-align
+
+>`line-height` percentage || [length](https://developer.mozilla.org/zh-CN/docs/Web/CSS/length) ==> 行盒的高度 = font-size(继承) * value
+>
+> 无单位数值 ==> 行盒的高度 = fontsize(自身) * number
 
 
+> <code>[x-height](https://zh.wikipedia.org/zh-cn/X%E5%AD%97%E9%AB%98)</code> 是指字母的基本高度，精确的说就是基线（`basheline`）和主线（`mean line` 又称中线 `median`）之间的距离
+>
+> `ascender` 是指超过主线笔画的部分，也就是比 `x-height` 还要高的部分
+>
+> `descender` 是指字母向下延伸超过基线的笔画部分，也称为**下延部**
+>
+> `cap height` 是指位于基线以上的大写字母的高度
+>
+> `vertical-align: middle` 指的是基线往上1/2 `"x-height"`高度。我们可以近似脑补成字母`x`交叉点那个位置。 跟 `median` 不是一个意思。
 
-##### 
+<img src="https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/x-height.svg" alt="x-height" style="zoom:400%;" />
 
-#### transform
 
- transform: rotate(45deg);顺时针旋转
+```html
+<style>
+    .parent {
+      background-color: #f0f0f0;
+      line-height: 1.5;
+    }
 
-transform:skew(45deg, 10deg); 
+    .son {
+      border: 1px solid blue;
+      font-size: 40px;
+    }
+  </style>
+</head>
 
-skew(水平方向（右-正），垂直方向（下为正）)
-
-transform: scale(1.5，1.2); 水平，垂直都绽放
-
-如果只写一个参数，就是等比缩放
-
-transform:translate(x,y);
-
-transform：translateX(50%):走自己宽度的一半
+<body>
+  <div class="parent">
+    我是父级元素，我的font-size为16px，line-height为150%
+    <div class="son">
+      我是子级元素，我的font-size为40px，继承line-height为150%
+      我是子级元素，我的font-size为40px，继承line-height为150%
+      我是子级元素，我的font-size为40px，继承line-height为150%
+      我是子级元素，我的font-size为40px，继承line-height为150%
+    </div>
+  </div>
+</body>
+```
 
 
 
@@ -691,11 +695,76 @@ transform：translateX(50%):走自己宽度的一半
 <div id="triangle"></div>
 ```
 
+### nth-child 与 nth-of-type区别
 
+`nth-child` 执行过程=> 会把所有的盒子都排列序号，之后看  :nth-child 前面跟的元素 如果匹配成功则在执行
 
+`nth-of-type` 执行过程 => 先看 :(冒号)前面的跟的是哪种类型的元素，然后把属于这种类型的进行排列序号
 
+## 包含块
 
-### DOM节点
+一个元素的尺寸和位置经常受包含块（containing block）的影响，大多数情况下，包含块（标准盒模型）就是这个元素最近的祖先块元素的[内容区](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Containing_block)。
+当我们对元素的尺寸和位置(`margin || padding || width || height || left || right || top || bottom`) 使用 `percentage values` 时，这些值的计算值，是通过元素的包含块计算得来的。其中 `height || top || bottom` 由包含块的 `height` 决定
+
+**包含块的确定**完全依赖这个元素的 `position` 属性：
+
+- 当 `position` 属性为 `static || relative || sticky` , 包含块可能由它的父节点（最近的祖先块元素）的**内容区的边缘**(`width`)组成或者最近的BFC
+- 当 `position` 属性为 `absolute` 时，其包含块为（`!static` ）的最近的祖先元素**内边距区的边缘**(`width+padding`)组成，**如其祖先元素都未显式指定**  `position` ，则为 `viewport`（MDN对此并未说明）
+
+> 根元素(`html`)所在的包含块是一个被称为初始包含块的矩形,它的尺寸是视口，可通过 `innnerWidth innerHeight` 获取
+
+- 当 `position` 属性为 `fixed` 时，其包含块通常为 `viewport`
+- 当 `position` 属性为 `absolute || fixed` 时，包含块也可能是由满足以下条件的最近父级元素的内边距区的边缘组成的：
+    1. transform 或 perspective 的值不是 none
+    2. will-change 的值是 transform 或 perspective
+    3. filter 的值不是 none 或 will-change 的值是 filter（只在 Firefox 下生效）。
+    4. contain 的值是 paint（例如：contain: paint;）
+    5. backdrop-filter 的值不是 none（例如：backdrop-filter: blur(10px);）
+
+## offset client scroll 系列
+
+::: tip
+margin || padding || left || top percentage values 是相对于带有定位的最近祖先元素（不一定是父级元素)
+
+`offsetLeft || offsetTop` 返回当前元素相对于 `offsetParent` 节点的 左边 || 顶部 偏移的像素值
+
+MDN 上对此解释并不太精准，实际应该是到包含块的 左边 || 顶部 偏移值。总之：如未显式指定 `position` 属性值为，那么偏移值就是到视口的距离。
+
+若 transform 参与位移， offsetTop offsetLeft 获取的值并不可靠
+
+`getBoundingClientRect` 可获取相对于视口的位置
+
+上述可参考[containing block](#包含块)
+:::
+
+```js
+// 盒模型,默认 margin border padding  content 可能还会有 scrollBar(chrome scrollBarWidth 默认为17)
+console.log('======== offset ========');
+console.log('offsetParent=====> ', box.offsetParent);
+console.log('offsetWidth=====> ', box.offsetWidth); // 包含 border padding content scrollBarWidth
+console.log('offsetHeight=====> ', box.offsetHeight); // 包含 border padding content scrollBarWidth
+console.log('offsetLeft=====> ', box.offsetLeft); // 距离带有定位的最近祖先元素的偏移量
+console.log('offsetTop=====> ', box.offsetTop); // 距离带有定位的最近祖先元素的偏移量
+
+console.log('======== client ========');
+console.log('clientWidth=====> ', box.clientWidth); // 不包含 border 及 scrollBarWidth
+console.log('clientHeight=====> ', box.clientHeight); // 不包含 border 及 scrollBarWidth
+console.log('clientLeft=====> ', box.clientLeft); // 获取左边框（border-left）的宽度
+console.log('clientTop=====> ', box.clientTop); // 获取上边框（border-top）的宽度
+
+console.log('======== scroll ========');
+console.log('scrollWidth=====> ', box.scrollWidth); // 包含卷去的宽度，不包含 border 及 scrollBarWidth 
+console.log('scrollHeight=====> ', box.scrollHeight); // 包含卷去的高度，不包含 border 及 scrollBarWidth 
+console.log('scrollLeft=====> ', box.scrollLeft); // 滑动卷去的宽度（max） = scrollWidth - clientWidth , scrollBarWidth 已排除
+console.log('scrollTop=====> ', box.scrollTop); // 滑动卷去的高度（max） = scrollHeight - clientHeight , scrollBarWidth 已排除
+
+box.addEventListener('scroll', () => {
+    const obj = { scrollTop: box.scrollTop, screenLeft: box.scrollLeft };
+    console.log(obj);
+});
+```
+
+## DOM节点
 
 
 
@@ -722,7 +791,7 @@ transform：translateX(50%):走自己宽度的一半
 </script>
 ```
 
-### 事件流
+## 事件流
 
 `addEventListener`
 
@@ -758,76 +827,4 @@ document.addEventListener('click', e => {
 //  当点击 span 时 按照顺序 为true的先执行 输出结果为 父亲 儿子 孙子 重孙子 重孙子冒泡 document
 ```
 
-### 作用域
-
-1. 变量的提升
-
-```js
-console.log(a); // undefined
-var a = 10;
-```
-
-```js
-for (var i = 0; i <= 3; i++) {
-    setTimeout(() => {
-        console.log(i);
-    }, 1000);
-}
-for (var i = 0; i <= 3; i++) {
-    (function (a) {
-        console.log(a)
-    })(i);
-}
-
-for (let i = 0; i <= 3; i++) {
-    setTimeout(function () {
-        console.log(i);
-    }, 1000);
-}
-```
-
-### 闭包
-
-```js
-// 使用闭包获取区间
-var arr = [1, 2, 3, 4, 5, 6, 7, 8];
-let hd = arr.filter(v => v > 3 && v < 7);
-console.log(hd);
-let hd1 = arr.filter(v => v > 4 && v < 8);
-console.log(hd1);
-function between(a, b) {
-    return function (v) {
-        return v > a && v < b;
-    };
-}
-console.log(arr.filter(between(2, 7)));
-
-let btns = document.querySelectorAll('button');
-btns.forEach(item => {
-    let bind = false;
-    item.addEventListener('click', () => {
-        let left = 1;
-        if (!bind) {
-            // setInterval 返加非零数值
-            bind = setInterval(() => {
-                item.style.left = left++ + 'px';
-            }, 10);
-        }
-    });
-});
-```
-
-
-
 `break`  跳出当前循环 `continue ` 跳过当前循环，开始下一轮
-
-
-
-
-
-
-
-
-
-[^1]:  grid布局中 `place-content` 是 `align-content` 与 `justify-content`的复合写法。 `place-items` 是 `align-items` `justify-items` 的复合写法。flex布局中都可以使用
-[^2]: dddd

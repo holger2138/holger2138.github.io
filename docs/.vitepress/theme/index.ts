@@ -15,3 +15,9 @@ export default {
     // console.log(args);
   }
 };
+
+// (option.xAxis as XAXisOption[])[0].push(...res);
+// (option.xAxis as XAXisOption).data.push(...res);
+
+// (option.series as SeriesOption$1[])[0].push(...res)
+// (option.series as SeriesOption$1).data.push(...res)
