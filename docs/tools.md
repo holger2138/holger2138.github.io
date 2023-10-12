@@ -7,11 +7,23 @@ git config --global user.name "HOLER"
 git config --global user.email "holger2138@gmail.com"
 # 创建SSH Keys -t 类型 -C 文件描述
 ssh-keygen -t rsa -C "holger2138@gmail.com"
-git config --global --list # 查看全局配置
 git config --global http.https://github.com.proxy localhost:10809
 git config --global --unset http.https://github.com.proxy
+git config --global --list # 查看全局配置
 npm config set registry https://registry.npmmirror.com/
 
+```
+
+```txt
+Host github.com
+  Hostname ssh.github.com
+  User git
+  Port 443
+  ProxyCommand connect -S 127.0.0.1:7897 %h %p
+
+# https 地址直接复制 
+# git地址 需要更改变 ssh://git@ssh.github.com:443/YOUR-USERNAME/YOUR-REPOSITORY.git
+参考 https://docs.github.com/en/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
 ```
 
 ::: tip
@@ -115,11 +127,10 @@ git log --format="%Cred%h  %CresetCD:%Cgreen%cI  %CresetAD:%Cgreen%aI  %Cblue%an
 - 压缩提交
 
   ```sh
+  git rebase -i --root # 从第一个提交开始
+  git rebase -i [startpoint] # 建议使用（endpoint 省略时默认为HEAD,否则的话区间后面的内容会在合并的时候忽略掉）
   git rebase -i [startpoint] [endpoit] # 压缩中间的合并 前开后闭
   git rebase -i [startpoint]^ [endpoit] # 压缩中间的合并 前闭后闭
-  git rebase -i --root # 从第一个提交开始
-  # 建议使用（endpoint 省略时默认为HEAD,否则的话区间后面的内容会在合并的时候忽略掉）
-  git rebase -i [startpoint] 
   ```
 
   - 分支合并
@@ -139,7 +150,7 @@ git log --format="%Cred%h  %CresetCD:%Cgreen%cI  %CresetAD:%Cgreen%aI  %Cblue%an
   dev a b c d e g 所有的提交按 a-h 顺序提交
 
   ```sh
-  git rebase master
+  git rebase master # dev 分支执行 
   # 合并 dev 分支 git rebase dev | git merge dev;
   git switch master
   git merge dev
@@ -147,7 +158,9 @@ git log --format="%Cred%h  %CresetCD:%Cgreen%cI  %CresetAD:%Cgreen%aI  %Cblue%an
 
   merge 的提交总是按照时间为顺序 a b c d e f g 'fix conflicts' 并会产生一次新的提交。
 
-  dev 分支把自己的异（e g）拷贝一份副本, 基变为 master ，再拼接，最后的提交顺序 a b c d f h e g
+  在dev分支执行：git rebase master ==> dev 分支把自己的异（e g）拷贝一份副本(commitID 会变), 基变为 master ，再拼接，最后的提交顺序 a b c d f h e' g'
+
+  在master分支执行：git rebase dev ==> master 分支把自己的异（f h）拷贝一份副本, 基变为 dev ，再拼接，最后的提交顺序 a b c d e g f' h'
 
   ![image-20221202132537565](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20221202132537565.png)
 
@@ -181,6 +194,7 @@ git cherry-pick commitId1^..commitIdN # # 摘取连续的 commitId 包含 commit
 git cherry-pick branch # 摘取最新的 commitId
 git cherry-pick ..branch # 摘取所有
 ```
+
 
 
 ## 腾讯云服务器使用总结

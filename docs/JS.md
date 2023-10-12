@@ -1,188 +1,6 @@
+## 原生
 
 
-## npm 相关理解
-
-- npm init
-
-![image-20221125151027144](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20221125151027144.png)
-
-```sh
-npm init ===> npm create
-npx ===> npm exec
-
-npm init vue ===> npm create vue ===> npm exec create-vue ===> npm x create-vue ===> npx create-vue
-npm init vite ===> npm create vite ===> npm exec create-vite
-
-@scope 就是可能这个包为 例如 npm init @config/vue 会去找 create-vue 下 config 的最后一个版本 @config/create-vue@latest
-
-npm init <@scope> (same as `npx <@scope>/create`) ===> npm init vue || npx vue/create
-npm init [<@scope>/]<name> (same as `npx [<@scope>/]create-<name>`) ===> npm init vue/vue || npx vue/create-vue
-```
-
-- npx
-
-```sh
-npx tsc --version // 首先当前项目 node_modules  => 全局 => 网络 => 网络如果找不到 可以通过 -p 指定包来执行
-npx -p typescript tsc --version
-```
-
-- workspaces
-
-```sh
-npm init -y -w packages/b --workspace=packages/b  # workspaces: ['packages/a', 'packages/b']
-# npm init -y -w=./packages/a -w=./packages/b
-npm init -y -w a -w b  # workspaces: { packages: ['a', 'b'] } 同上一样，只不过项目在当前根项目 a b c 而非上面的packages/a
-npm init vite ./ -w packages/a # 以 packages/a作为项目，并初始化
-
-npm init -y monorepo-demo
-npm init -y -w ./packages/backend
-npm i express -S # 在根中 安装express
-npm i lodash -w a # 在子项目a 中安装lodash
-npm i whistle -w b # 在子项目b 中安装whistle
-npm run test -w a # 在当前工作区 运行子项目a中的命令 等同于 cd packages/a && npm run test
-
-
-npm run test --workspace=a --workspace=b #在当前工作区同时运行子项目a b 中的命令 npm run start -w=a -w=b
-npm run test --workspaces #  简写当前工作区同时运行子项目a b  npm run test -ws 当某个子项目没有 test 会对当前子项目报错提示 可通过npm run start -ws --if-present 进行跳过
-```
-
-- 常用全局命令
-
-```sh
-npm outdated -g # 检查全局包是否有更新
-npm list -g --depth 0 # 查看全局安装包`
-npm update package -g # 更新全局包
-```
-
-- 常用技巧
-
-```sh
-npm config --global --list # 获取全局配置
-git config --global --unset http.proxy # 配置全局代理 --local 也行，注意影响他人
-git config --global --unset http.sslverify # 禁止 ssl 校验
-```
-
-## 正则相关
-
-<img src="https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20200826105347640.png"/>
-
-### 字符串实例方法
-
-- String.prototype.replace
-
-```js
-// $$ => 美元符号 $ => 匹配子串前面的文本` $' => 匹配子串后面的文本 $& => 匹配子串 $n => 捕获组 $<name> => 命名捕获组
-const a = 'abc'.replace('b', "[$'-$&-$`]");
-// a[c-b-a]c
-console.log(a);
-
-var prices = { p1: '$1.99', p2: '$9.99', p3: '$5.00' };
-var template = '<span id="p1"></span>' + '<span id="p2"></span>' + '<span id="p3"></span>';
-const reg1 = /(<span\sid=")(?<id>.*?)(">)(<\/span>)/g;
-// match 匹配的子串 pn => 匹配捕获组 offst => index string => 原字符串 namedCaptrueGroup => 命名捕获组
-const d = template.replace(reg1, function (match, p1, p2, p3, p4, offset, string, namedCaptureGroup) {
-  // console.log(arguments);
-  return p1 + p2 + p3 + prices[namedCaptureGroup.id] + p4;
-});
-// <span id="p1">$1.99</span><span id="p2">$9.99</span><span id="p3">$5.00</span>
-console.log(d);
-```
-
-- String.prototype.split
-
-```js
-const a = 'a,  b, c, d'.split(/,\s*/);
-// ["a", "b", "c", "d"]
-console.log(a);
-
-const b = 'a,  b, c, d'.split(/,\s*/, 2);
-// ["a", "b"]
-console.log(b);
-
-const c = 'aaa*a*'.split(/a*/);
-// ["", "*", "*"]  此外默认是贪婪匹配， a* 会默认尽可能多的匹配 a
-console.log(c);
-
-const d = 'aaa**a*'.split(/a*/);
-// ["", "*", "*", "*"]
-console.log(d);
-
-const e = 'aaa*a*'.split(/(a*)/);
-// ["", "aaa", "*", "a", "*"]
-console.log(e);
-```
-
-### 断言
-
-```js
-// 此字符串匹配的是 => 我是你我是你
-const reg1 = /(我是你)(?=我是)\1/;
-
-// 此字符串匹配的是 => 我是你我是我是你
-const reg2 = /(我是你)(?=我是\1)/;
-```
-
-- 正则处理数字
-
-```typescript
-function formatCurrency(num) {
-  num = typeof num === 'number' ? num : parseFloat(num);
-  const [l, r] = num.toFixed(2).split('.');
-
-  // const reg = /\B(?=(\d{3})+$)/g;
-  // const reg = /\B(?=(\d{3})+(?!\d))/g;
-  // const reg = /\d(?=(\d{3})+$)/g; // 需要替换为 $&,
-  // return l.replace(reg, ',') + '.' + r;
-
-  // let endIndex = l.length % 3;
-  // const arr = [];
-  // arr.push(l.substring(0, endIndex));
-  // while (endIndex < l.length) {
-  //   arr.push(l.substring(endIndex, (endIndex += 3)));
-  // }
-  // return arr.join(',') + '.' + r;
-
-  const [left, right] = num.toString().split('.');
-  const arr = left.split('');
-  for (let i = arr.length - 3; i > 0; i -= 3) arr.splice(i, 0, ',');
-  return arr.join('') + (right ? `.${right}` : '');
-
-  const reverseLArr = l.split('').reverse();
-  let t = '';
-  for (let i = 0; i < reverseLArr.length; i++) {
-    t += reverseLArr[i] + ((i + 1) % 3 === 0 && i + 1 !== reverseLArr.length ? ',' : '');
-  }
-  return t.split('').reverse().join('') + '.' + r;
-}
-```
-
-```js
-// Lookahead assertion => reg(?=exp) => 即reg后面的内容是exp的
-let str1 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
-let reg1 = /后盾人(?=教程)/;
-str1 = str1.replace(reg1, v => 'HJ');
-console.log(str1); // 后盾人不断分享视频教程，学习HJ教程提升编程能力。
-
-// Lookbehind assertion => (?<=exp)reg => 即reg前面内容是exp的
-let str2 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
-let reg2 = /(?<=学习)后盾人/;
-str2 = str2.replace(reg2, v => 'HJ');
-console.log(str2); // 后盾人不断分享视频教程，学习HJ教程提升编程能力。
-
-// Negative lookahead assertion => reg(?!exp) => 即reg后面内容不是exp的
-let str3 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
-let reg3 = /后盾人(?!不断)/g;
-str3 = str3.replace(reg3, v => v + '系列书箱');
-console.log(str3); // 后盾人不断分享视频教程，学习后盾人系列书箱教程提升编程能力。
-
-// Negative lookbehind assertion => (?<!exp)reg => 即reg前面内容不是exp的
-let str4 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
-let reg4 = /(?<!视频)教程/;
-str4 = str4.replace(reg4, v => 'HJ');
-console.log(str4); // 后盾人不断分享视频教程，学习后盾人HJ提升编程能力。
-
-// 非捕获取 (?:\d)
-```
 
 ## 构造函数与类的理解
 
@@ -348,6 +166,8 @@ let obj = create(Person, 'hou', 28);
 console.log(obj);
 console.log(Object.getPrototypeOf(obj) === Person.prototype);
 ```
+
+
 
 ## Object 静态方法及属性深入理解
 
@@ -561,182 +381,221 @@ console.log(obj);
 console.log(Object.isFrozen(obj)); // true
 ```
 
-### DOM
 
-```js
-ul.childNodes; // 所有子节点
-ul.children; // 所有子元素
-ul.firstChild; // 第一个子节点
-ul.firstElementChild; // 第一个子元素
-ul.lastChild; // 最后一个子节点
-ul.lastElementChild; // 最后一个子元素
-li.previousSibling; // 前一个子节点
-li.previousElementSibling; // 前一个子元素
-li.nextSibling; // 后一个子节点
-li.nextElementSibling; // 后一个子元素
+
+### DOM 节点
+
+```html
+<ul>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+  <li>5</li>
+</ul>
+<script>
+  const ul = document.getElementsByTagName('ul')[0];
+  console.log(ul.children);
+  console.log(ul.firstElementChild);
+  console.log(ul.lastElementChild);
+  console.log(ul.children[2].previousElementSibling); // li2
+  console.log(ul.children[2].nextElementSibling); // li4
+  console.log('-----------');
+  console.log(ul.childNodes);
+  console.log(ul.firstChild);
+  console.log(ul.lastChild);
+  console.log(ul.childNodes[2].previousSibling === ul.childNodes[2].previousElementSibling);
+</script>
 ```
 
-### jsonp
+
+
+### 事件流
+
+`addEventListener`
 
 ```js
-function jsonp(options) {
-  const script = document.createElement('script');
-  const fnName = 'myJsonp' + Math.random().toString().replace('.', '');
-  let params = '';
-  for (const attr in options.data) {
-    params += '&' + attr + '=' + options.data[attr];
+target.addEventListener(type, listener, options);
+{ capture: false, once: false, passive: false } // 默认值
+capture 事件传播方式 与只传一个参数一样
+once 只能被点击一次
+passive 为true时，表示阻止e.preventDefault
+// 1 捕获阶段 2 目标阶段 3 冒泡阶段 e.eventPhase => number
+```
+
+```js
+// 执行顺序 =》  捕获 --- 目标 ---冒泡
+span.addEventListener(
+  'click',
+  e => {
+    console.log('我是重孙子');
+  },
+  true
+);
+span.addEventListener(
+  'click',
+  e => {
+    console.log('我是重孙子 冒泡');
+  },
+  false
+);
+grandson.addEventListener(
+  'click',
+  e => {
+    console.log('我是孙子');
+  },
+  true
+);
+son.addEventListener(
+  'click',
+  e => {
+    console.log('我是儿子');
+  },
+  true
+);
+parent.addEventListener(
+  'click',
+  e => {
+    console.log('我是父亲');
+  },
+  true
+);
+document.addEventListener(
+  'click',
+  e => {
+    console.log('我是documnet');
+  },
+  false
+);
+//  当点击 span 时 按照顺序 为true的先执行 输出结果为 父亲 儿子 孙子 重孙子 重孙子冒泡 document
+```
+
+`break` 跳出当前循环 `continue ` 跳过当前循环，开始下一轮
+
+## 正则相关
+
+<img src="https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20200826105347640.png"/>
+
+### 字符串实例方法
+
+- String.prototype.replace
+
+```js
+// $$ => 美元符号 $ => 匹配子串前面的文本` $' => 匹配子串后面的文本 $& => 匹配子串 $n => 捕获组 $<name> => 命名捕获组
+const a = 'abc'.replace('b', "[$'-$&-$`]");
+// a[c-b-a]c
+console.log(a);
+
+var prices = { p1: '$1.99', p2: '$9.99', p3: '$5.00' };
+var template = '<span id="p1"></span>' + '<span id="p2"></span>' + '<span id="p3"></span>';
+const reg1 = /(<span\sid=")(?<id>.*?)(">)(<\/span>)/g;
+// match 匹配的子串 pn => 匹配捕获组 offst => index string => 原字符串 namedCaptrueGroup => 命名捕获组
+const d = template.replace(
+  reg1,
+  function (match, p1, p2, p3, p4, offset, string, namedCaptureGroup) {
+    // console.log(arguments);
+    return p1 + p2 + p3 + prices[namedCaptureGroup.id] + p4;
   }
-  window[fnName] = options.success;
-  script.src = options.url + '?callback=' + fnName + params;
-  document.body.appendChild(script);
-  script.onload = function () {
-    document.body.removeChild(script);
-  };
+);
+// <span id="p1">$1.99</span><span id="p2">$9.99</span><span id="p3">$5.00</span>
+console.log(d);
+```
+
+- String.prototype.split
+
+```js
+const a = 'a,  b, c, d'.split(/,\s*/);
+// ["a", "b", "c", "d"]
+console.log(a);
+
+const b = 'a,  b, c, d'.split(/,\s*/, 2);
+// ["a", "b"]
+console.log(b);
+
+const c = 'aaa*a*'.split(/a*/);
+// ["", "*", "*"]  此外默认是贪婪匹配， a* 会默认尽可能多的匹配 a
+console.log(c);
+
+const d = 'aaa**a*'.split(/a*/);
+// ["", "*", "*", "*"]
+console.log(d);
+
+const e = 'aaa*a*'.split(/(a*)/);
+// ["", "aaa", "*", "a", "*"]
+console.log(e);
+```
+
+### 断言
+
+```js
+// 此字符串匹配的是 => 我是你我是你
+const reg1 = /(我是你)(?=我是)\1/;
+
+// 此字符串匹配的是 => 我是你我是我是你
+const reg2 = /(我是你)(?=我是\1)/;
+```
+
+- 正则处理数字
+
+```typescript
+function formatCurrency(num) {
+  num = typeof num === 'number' ? num : parseFloat(num);
+  const [l, r] = num.toFixed(2).split('.');
+
+  // const reg = /\B(?=(\d{3})+$)/g;
+  // const reg = /\B(?=(\d{3})+(?!\d))/g;
+  // const reg = /\d(?=(\d{3})+$)/g; // 需要替换为 $&,
+  // return l.replace(reg, ',') + '.' + r;
+
+  // let endIndex = l.length % 3;
+  // const arr = [];
+  // arr.push(l.substring(0, endIndex));
+  // while (endIndex < l.length) {
+  //   arr.push(l.substring(endIndex, (endIndex += 3)));
+  // }
+  // return arr.join(',') + '.' + r;
+
+  const [left, right] = num.toString().split('.');
+  const arr = left.split('');
+  for (let i = arr.length - 3; i > 0; i -= 3) arr.splice(i, 0, ',');
+  return arr.join('') + (right ? `.${right}` : '');
+
+  const reverseLArr = l.split('').reverse();
+  let t = '';
+  for (let i = 0; i < reverseLArr.length; i++) {
+    t += reverseLArr[i] + ((i + 1) % 3 === 0 && i + 1 !== reverseLArr.length ? ',' : '');
+  }
+  return t.split('').reverse().join('') + '.' + r;
 }
 ```
 
-
-
-## 原型的深入理解
-
 ```js
-// 局部变量变全局
-(function (win) {
-  var num = 10;
-  win.num = num;
-  console.log('哈哈');
-})(window);
-console.log(num);
+// Lookahead assertion => reg(?=exp) => 即reg后面的内容是exp的
+let str1 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
+let reg1 = /后盾人(?=教程)/;
+str1 = str1.replace(reg1, v => 'HJ');
+console.log(str1); // 后盾人不断分享视频教程，学习HJ教程提升编程能力。
 
-// 给 window 添加方法
-(function (win) {
-  function Random() {}
-  Random.prototype.getRandom = function () {
-    return Math.floor(Math.random() * 5);
-  };
-  // 构造函数传给 window 此时Random 成为内置方法，相当于 Array
-  win.Random = Random;
-})(window);
-var num = new Random();
-console.log(num.getRandom());
-console.log(window);
+// Lookbehind assertion => (?<=exp)reg => 即reg前面内容是exp的
+let str2 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
+let reg2 = /(?<=学习)后盾人/;
+str2 = str2.replace(reg2, v => 'HJ');
+console.log(str2); // 后盾人不断分享视频教程，学习HJ教程提升编程能力。
 
-(function (win) {
-  function Random() {}
-  Random.prototype.getRandom = function () {
-    return Math.floor(Math.random() * 5);
-  };
-  // 实例对象传给 window
-  win.Random = new Random();
-})(window);
-var num = Random;
-console.log(num.getRandom());
-console.log(window);
+// Negative lookahead assertion => reg(?!exp) => 即reg后面内容不是exp的
+let str3 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
+let reg3 = /后盾人(?!不断)/g;
+str3 = str3.replace(reg3, v => v + '系列书箱');
+console.log(str3); // 后盾人不断分享视频教程，学习后盾人系列书箱教程提升编程能力。
+
+// Negative lookbehind assertion => (?<!exp)reg => 即reg前面内容不是exp的
+let str4 = '后盾人不断分享视频教程，学习后盾人教程提升编程能力。';
+let reg4 = /(?<!视频)教程/;
+str4 = str4.replace(reg4, v => 'HJ');
+console.log(str4); // 后盾人不断分享视频教程，学习后盾人HJ提升编程能力。
+
+// 非捕获取 (?:\d)
 ```
-
-- 随机小方块
-
-```js
-// 产生随机数
-(function (win) {
-  function Random() {}
-  Random.prototype.getRandom = function (min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-  };
-  win.Random = new Random();
-})(window);
-
-// 创建小方块
-(function () {
-  var map = document.querySelector('.map');
-  function Food(width, height, color) {
-    this.width = width;
-    this.height = height;
-    this.color = color;
-    this.x = 0;
-    this.y = 0;
-    this.element = document.createElement('div');
-  }
-  Food.prototype.init = function (map) {
-    var div = this.element;
-    div.style.position = 'absolute';
-    div.style.width = this.width + 'px';
-    div.style.height = this.height + 'px';
-    div.style.backgroundColor = this.color;
-    map.appendChild(div);
-    this.render(map);
-  };
-  Food.prototype.render = function (map) {
-    var x = Random.getRandom(0, map.offsetWidth / this.width) * this.width;
-    var y = Random.getRandom(0, map.offsetHeight / this.height) * this.height;
-    this.x = x;
-    this.y = y;
-    var div = this.element;
-    div.style.left = this.x + 'px';
-    div.style.top = this.y + 'px';
-  };
-  var Food = new Food(20, 20, 'red');
-  Food.init(map);
-  console.log(Food.x + '----' + Food.y);
-})();
-```
-
-## 递归
-
-```js
-// 普通求和
-var num = 0;
-function sum(n) {
-  for (var i = 1; i <= n; i++) {
-    num += i;
-  }
-  return num;
-}
-
-// 递归求和
-function sumRecursion(n) {
-  if (n == 1) {
-    return 1;
-  }
-  return sumRecursion(n - 1) + n;
-}
-
-//  递归 斐波那契数列
-function fib(n) {
-  if (n <= 2) {
-    return 1;
-  }
-  return fib(n - 1) + fib(n - 2);
-}
-```
-
-## module 相关
-
-- ESM
-
-```js
-// a.js
-function sum(num1, num2) {
-  return num1 + num2;
-}
-const name = '小明';
-const age = 28;
-export { name, age, sum as default };
-// b.js 非项目中不能省略 .js 后缀,以下两种写法都可以
-import * as index from './b.js';
-import sum, { name, age } from './index.js';
-console.log(index);
-// index.html script 标签中加上 module
-<script src="./b.js" type="module"></script>;
-```
-
-- commonjs
-
-- AMD(asynchronous module definition)
-
-`requirejs`
-
-
 
 ## Iterator
 
@@ -748,7 +607,9 @@ function makeIterator(arr) {
   let nextIndex = 0;
   return {
     next() {
-      return nextIndex < arr.length ? { value: arr[nextIndex++], done: false } : { value: undefined, done: true };
+      return nextIndex < arr.length
+        ? { value: arr[nextIndex++], done: false }
+        : { value: undefined, done: true };
     }
   };
 }
@@ -1027,14 +888,16 @@ console.log(obj1);
 console.log(objProxy);
 ```
 
-
-
 ## Promise
+
+<!-- <<< @/../deploy.sh{1,4-10 sh} -->
 
 [Promises/A+](https://promisesaplus.com/)
 
 ::: details 手写 Promise
+
 <<< @/snippets/promise.js
+
 :::
 
 - 场景考虑
@@ -1109,3 +972,238 @@ promise2.catch(reason => {
   console.log(reason);
 });
 ```
+
+## npm 相关理解
+
+- npm init
+
+![image-20221125151027144](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/image-20221125151027144.png)
+
+```sh
+npm init ===> npm create
+npx ===> npm exec
+
+npm init vue ===> npm create vue ===> npm exec create-vue ===> npm x create-vue ===> npx create-vue
+npm init vite ===> npm create vite ===> npm exec create-vite
+
+@scope 就是可能这个包为 例如 npm init @config/vue 会去找 create-vue 下 config 的最后一个版本 @config/create-vue@latest
+
+npm init <@scope> (same as `npx <@scope>/create`) ===> npm init vue || npx vue/create
+npm init [<@scope>/]<name> (same as `npx [<@scope>/]create-<name>`) ===> npm init vue/vue || npx vue/create-vue
+```
+
+- npx
+
+```sh
+npx tsc --version // 首先当前项目 node_modules  => 全局 => 网络 => 网络如果找不到 可以通过 -p 指定包来执行
+npx -p typescript tsc --version
+```
+
+- workspaces
+
+```sh
+npm init -y -w packages/b --workspace=packages/b  # workspaces: ['packages/a', 'packages/b']
+# npm init -y -w=./packages/a -w=./packages/b
+npm init -y -w a -w b  # workspaces: { packages: ['a', 'b'] } 同上一样，只不过项目在当前根项目 a b c 而非上面的packages/a
+npm init vite ./ -w packages/a # 以 packages/a作为项目，并初始化
+
+npm init -y monorepo-demo
+npm init -y -w ./packages/backend
+npm i express -S # 在根中 安装express
+npm i lodash -w a # 在子项目a 中安装lodash
+npm i whistle -w b # 在子项目b 中安装whistle
+npm run test -w a # 在当前工作区 运行子项目a中的命令 等同于 cd packages/a && npm run test
+
+
+npm run test --workspace=a --workspace=b #在当前工作区同时运行子项目a b 中的命令 npm run start -w=a -w=b
+npm run test --workspaces #  简写当前工作区同时运行子项目a b  npm run test -ws 当某个子项目没有 test 会对当前子项目报错提示 可通过npm run start -ws --if-present 进行跳过
+```
+
+- 常用全局命令
+
+```sh
+npm outdated -g # 检查全局包是否有更新
+npm list -g --depth 0 # 查看全局安装包`
+npm update package -g # 更新全局包
+```
+
+- 常用技巧
+
+```sh
+npm config --global --list # 获取全局配置
+git config --global --unset http.proxy # 配置全局代理 --local 也行，注意影响他人
+git config --global --unset http.sslverify # 禁止 ssl 校验
+```
+
+### DOM
+
+```js
+ul.childNodes; // 所有子节点
+ul.children; // 所有子元素
+ul.firstChild; // 第一个子节点
+ul.firstElementChild; // 第一个子元素
+ul.lastChild; // 最后一个子节点
+ul.lastElementChild; // 最后一个子元素
+li.previousSibling; // 前一个子节点
+li.previousElementSibling; // 前一个子元素
+li.nextSibling; // 后一个子节点
+li.nextElementSibling; // 后一个子元素
+```
+
+### jsonp
+
+```js
+function jsonp(options) {
+  const script = document.createElement('script');
+  const fnName = 'myJsonp' + Math.random().toString().replace('.', '');
+  let params = '';
+  for (const attr in options.data) {
+    params += '&' + attr + '=' + options.data[attr];
+  }
+  window[fnName] = options.success;
+  script.src = options.url + '?callback=' + fnName + params;
+  document.body.appendChild(script);
+  script.onload = function () {
+    document.body.removeChild(script);
+  };
+}
+```
+
+## 原型的深入理解
+
+```js
+// 局部变量变全局
+(function (win) {
+  var num = 10;
+  win.num = num;
+  console.log('哈哈');
+})(window);
+console.log(num);
+
+// 给 window 添加方法
+(function (win) {
+  function Random() {}
+  Random.prototype.getRandom = function () {
+    return Math.floor(Math.random() * 5);
+  };
+  // 构造函数传给 window 此时Random 成为内置方法，相当于 Array
+  win.Random = Random;
+})(window);
+var num = new Random();
+console.log(num.getRandom());
+console.log(window);
+
+(function (win) {
+  function Random() {}
+  Random.prototype.getRandom = function () {
+    return Math.floor(Math.random() * 5);
+  };
+  // 实例对象传给 window
+  win.Random = new Random();
+})(window);
+var num = Random;
+console.log(num.getRandom());
+console.log(window);
+```
+
+- 随机小方块
+
+```js
+// 产生随机数
+(function (win) {
+  function Random() {}
+  Random.prototype.getRandom = function (min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  };
+  win.Random = new Random();
+})(window);
+
+// 创建小方块
+(function () {
+  var map = document.querySelector('.map');
+  function Food(width, height, color) {
+    this.width = width;
+    this.height = height;
+    this.color = color;
+    this.x = 0;
+    this.y = 0;
+    this.element = document.createElement('div');
+  }
+  Food.prototype.init = function (map) {
+    var div = this.element;
+    div.style.position = 'absolute';
+    div.style.width = this.width + 'px';
+    div.style.height = this.height + 'px';
+    div.style.backgroundColor = this.color;
+    map.appendChild(div);
+    this.render(map);
+  };
+  Food.prototype.render = function (map) {
+    var x = Random.getRandom(0, map.offsetWidth / this.width) * this.width;
+    var y = Random.getRandom(0, map.offsetHeight / this.height) * this.height;
+    this.x = x;
+    this.y = y;
+    var div = this.element;
+    div.style.left = this.x + 'px';
+    div.style.top = this.y + 'px';
+  };
+  var Food = new Food(20, 20, 'red');
+  Food.init(map);
+  console.log(Food.x + '----' + Food.y);
+})();
+```
+
+## 递归
+
+```js
+// 普通求和
+var num = 0;
+function sum(n) {
+  for (var i = 1; i <= n; i++) {
+    num += i;
+  }
+  return num;
+}
+
+// 递归求和
+function sumRecursion(n) {
+  if (n == 1) {
+    return 1;
+  }
+  return sumRecursion(n - 1) + n;
+}
+
+//  递归 斐波那契数列
+function fib(n) {
+  if (n <= 2) {
+    return 1;
+  }
+  return fib(n - 1) + fib(n - 2);
+}
+```
+
+## module 相关
+
+- ESM
+
+```js
+// a.js
+function sum(num1, num2) {
+  return num1 + num2;
+}
+const name = '小明';
+const age = 28;
+export { name, age, sum as default };
+// b.js 非项目中不能省略 .js 后缀,以下两种写法都可以
+import * as index from './b.js';
+import sum, { name, age } from './index.js';
+console.log(index);
+// index.html script 标签中加上 module
+<script src="./b.js" type="module"></script>;
+```
+
+- commonjs
+
+- AMD(asynchronous module definition)
+
+`requirejs`

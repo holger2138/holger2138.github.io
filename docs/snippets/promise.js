@@ -144,7 +144,7 @@ function resolvePromise(promise, x, resolve, reject) {
       }
     } catch (error) {
       /** 为什么要判断 called ?
-       * 假设自定义 thenable 传递三个函数 y(resolvePromse) r(rejectPromise) z(anotherFn)
+       * 假设自定义 thenable 传递三个函数 y(resolvePromise) r(rejectPromise) z(anotherFn)
        * 如果调用 z 后,再调用 y || r 会被下一个 then 捕获, y || r 不会执行,自然没有问题
        * 如果调用 y || r 后调用了 z, y || r 执行后会被下一个then捕获,z也会执行报错也会 catch 被捕获,开始执行 reject
        * 当然上述只是优化逻辑,不限定对于结果没有任何影响(只为跑通测试) 因为 resolve || reject 以作出判断
@@ -161,7 +161,7 @@ function resolvePromise(promise, x, resolve, reject) {
 
 // 测试相关 promises-aplus-tests
 MyPromise.deferred = function () {
-  var result = {};
+  const result = {};
   result.promise = new MyPromise(function (resolve, reject) {
     result.resolve = resolve;
     result.reject = reject;

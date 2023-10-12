@@ -1,7 +1,9 @@
 node_modules/
-docs/.vitepress/dist
 docs/.vitepress/cache
+docs/.vitepress/.temp
+docs/.vitepress/dist
 deploy.sh
 jsconfig.json
 .vscode
+.idea
 .log
