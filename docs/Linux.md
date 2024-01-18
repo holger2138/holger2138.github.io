@@ -403,8 +403,6 @@ echo -e "hello\nworld" | cat | wc -l # 终端输出2
 # l 显示长信息 h 显示可读性的文件大小 i ==> inode
 ```
 
--  function Vue(options) {  if (process.env.NODE_ENV !== 'production' && !(this instanceof Vue)) {    warn('Vue is a constructor and should be called with the `new` keyword');  }  this._init(options);}// 实例方法 __initinitMixin(Vue);// 实例方法 $data $props $set $delete $watchstateMixin(Vue);// 实例方法 $on $once $off $emiteventsMixin(Vue);// 实例方法  _update（没写错）lifecycleMixin(Vue);// 实例方法 $nextTick _render _o _n _s _l _t _q _i _m _f _k _b _v _e _urenderMixin(Vue);​export default Vue;js
-
 ```sh
 # -z gzip -c 创建 -x 解压 -v verbose显示处理过程 -f 备份文件 -t 显示归档文件的内容（不会解压缩）
 # --remove-files 压缩文件的同时删除源文件(复数说明不能用于 删除归档) -C 解压后放入指定目录
@@ -418,8 +416,10 @@ echo -e "hello\nworld" | cat | wc -l # 终端输出2
 > 硬链接（`hard links`）表现正常 ，硬链接与复制不同
 
 ```sh
-# ln -s targe linkName 创建软链接(符号链接 文件 || 目录) 对于文件目录来说 rm linkName 不要加上/ 否则会删除target 文件
-# ln target linkName 创建硬链接（只能是文件）
+# ln target linkName 硬链接 只能创建文件
+# ln -s targe linkName 软链接(符号链接) 文件 || 目录 对于文件目录来说 rm linkName 不要加上/ 否则会删除target 文件
+
+ln a1.txt a2.txt # 可通过 ls -il 查看 inode 是相同的,修改a1 a2 也会被修改
 
 # 软链接（文件） rm aFileSoftLink 不影响 target
 ln -s test/a/a.txt  ./aFileSoftLink
@@ -427,10 +427,8 @@ ln -s test/a/a.txt  ./aFileSoftLink
 # rm aDirSoftLink/ 若目录后加上斜杠，当前软链接目录还在文件则被删除（影响 target）
 ln -s ./test/a aDirSoftLink
 
-# 硬链接 只能创建文件
-# 删除硬链接 || target  都不会有影响（有点类似指针的概念）
-# 可通过 ls test/a/a.txt aFileHardLink -il 查看 inode 是相同的
-ln test/a/a.txt aFileHardLink
+# windows 使用 cmd 创建软链接
+mklink /j "D:\a" "C:\Users\HJ\Desktop\link"  # D盘a文件夹指向 link 文件夹
 ```
 
 ## vim

@@ -26,7 +26,9 @@ This is a details block.
 `<<< @/filepath{highlightLines}`
 :::
 
-<<< @/snippets/snippets.js#bar{2 javascript}
+手写 Promise
+
+<<< @/snippets/promise.js{javascript}
 
 <!-- <<< @/../deploy.sh{1,4-10 sh} -->
 
@@ -46,12 +48,12 @@ const page = useData()
 
 This is a .md using a custom component
 
-<LiveSource />
+<!-- <LiveSource /> -->
 <!-- <pre>{{ page }}</pre> -->
 
 ## Level 2 文档相关
 
-[ES6 相关](./js%E9%AB%98%E7%BA%A7.md)
+[ES6 相关](./JS.md)
 
 [TypeScript](./TypeScript.md)
 

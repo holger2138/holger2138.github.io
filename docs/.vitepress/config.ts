@@ -11,7 +11,7 @@ const themeConfig = {
     { text: 'Configs', link: 'https://vitepress.vuejs.org/config/introduction' },
     { text: 'Changelog', link: 'https://github.com/holger2138/docs-vitepress' }
   ],
-  socialLinks: [{ icon: 'github', link: 'https://github.com/holger2138/holger2138.github.io' }],
+  // socialLinks: [{ icon: 'github', link: 'https://github.com/holger2138/holger2138.github.io' }],
   sidebar: [
     {
       text: '前端',
@@ -19,10 +19,13 @@ const themeConfig = {
       collapsed: false,
       items: [
         { text: 'Guide', link: '/guide' },
-        { text: 'DOM', link: '/DOM' },
-        { text: 'vue', link: '/vue 源码分析' },
-        { text: 'js高级', link: '/js高级' },
-        { text: 'TypeScript', link: '/TypeScript' }
+        { text: 'CSS', link: '/CSS' },
+        { text: 'JavaScript', link: 'JS' },
+        { text: 'TypeScript', link: '/TypeScript' },
+        { text: 'Framework', link: '/vue 源码分析' },
+        { text: '面试题', link: '/面试题' },
+        { text: '面试题及相关数据处理', link: '/面试题及相关数据处理.md' },
+        { text: '数据结构与算法', link: '/数据结构与算法.md' }
       ]
     },
     {
@@ -31,29 +34,25 @@ const themeConfig = {
       collapsed: false,
       items: [
         { text: '计算机网络', link: '/计算机网络' },
-        { text: 'Linux', link: '/Linux' }
+        { text: 'Linux', link: '/Linux' },
+        { text: 'Tool-Document', link: '/Tool-Document.md' }
       ]
     },
     {
       text: '工具相关',
       collapsible: true,
       collapsed: false,
-      items: [
-        { text: 'Tool-Document', link: '/Tool-Document.md' },
-        { text: 'VitePress相关语法', link: '/guide' }
-      ]
+      items: [{ text: 'VitePress相关语法', link: '/guide' }]
     },
     {
-      text: '数据结构与算法',
+      text: '其他相关',
       collapsible: true,
       collapsed: false,
       items: [
+        { text: '正则表达式', link: 'https://regex101.com/' }
         // Data Structures and Algorithms
-        { text: '数据结构与算法', link: '/数据结构与算法.md' },
-        { text: '面试题及相关数据处理', link: '/面试题及相关数据处理.md' },
-        { text: '面试题', link: '/面试题' }
         // {
-        //   text: '相关网站',
+        //   text: '正则',
         //   items: [
         //     {
         //       text: '百度',
@@ -97,6 +96,6 @@ export default defineConfigWithTheme({
       }
     }
   },
-  themeConfig: themeConfig,
+  themeConfig: themeConfig
   // lastUpdated: true
 });
