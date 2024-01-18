@@ -1,0 +1,1 @@
+import{_ as s,c as i,o as a,V as n}from"./chunks/framework.AMXcuUAT.js";const c=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"CSS.md","filePath":"CSS.md"}'),l={name:"CSS.md"},h=n("",95),t=[h];function k(p,e,r,F,d,g){return a(),i("div",null,t)}const o=s(l,[["render",k]]);export{c as __pageData,o as default};

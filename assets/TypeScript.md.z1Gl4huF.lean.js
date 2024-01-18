@@ -1,0 +1,1 @@
+import{_ as i,c as s,o as a,V as n}from"./chunks/framework.AMXcuUAT.js";const o=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"TypeScript.md","filePath":"TypeScript.md"}'),h={name:"TypeScript.md"},t=n("",39),k=[t];function l(p,e,r,F,d,g){return a(),s("div",null,k)}const c=i(h,[["render",l]]);export{o as __pageData,c as default};

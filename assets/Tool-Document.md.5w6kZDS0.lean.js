@@ -1,0 +1,1 @@
+import{_ as s,c as i,o as a,V as n}from"./chunks/framework.AMXcuUAT.js";const B=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"Tool-Document.md","filePath":"Tool-Document.md"}'),l={name:"Tool-Document.md"},h=n("",57),p=[h];function k(t,e,r,d,g,E){return a(),i("div",null,p)}const F=s(l,[["render",k]]);export{B as __pageData,F as default};
