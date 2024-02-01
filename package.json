@@ -7,7 +7,7 @@
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs --port 8080"
+    "docs:preview": "vitepress serve docs --port 8080"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/holger2138/holger2138.github.io.git#readme",
   "devDependencies": {
-    "@types/node": "^18.16.6",
-    "axios": "^1.2.2",
+    "@types/node": "^20.11.5",
+    "axios": "^1.6.5",
     "markdown-it-mathjax3": "^4.3.2",
     "sass": "^1.57.1",
     "vitepress": "^1.0.0-alpha.35",

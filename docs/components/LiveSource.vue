@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup>
-import axios from 'axios';
+import axios from '@/apis/request';
 import { reactive, ref } from 'vue';
 import { isMobile } from '@/utils';
 
@@ -85,7 +85,7 @@ getLiveSource();
 async function genLiveSorceFile() {
   let flag = true,
     res;
-  // 用于处理国内无法访问外网，通过 github CICD 远程下载进行处理
+  // 用于处理国内无法访问外网，通过 github CI/CD 远程下载进行处理
   try {
     res = await axios.get(uri.value);
   } catch (error) {

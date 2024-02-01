@@ -1,3 +1,98 @@
+##  any unknown never void 
+
+::: info 理解
+top types ===> (any | unknown) , bottom type ===> never 用于继承时可以看作一个空的联合类型
+
+any 既是 top types 又是 bottom type 比 never 还要低
+
+void  strictNullChecks (默认为 true)
+为 true  时，是 undefined 超集
+为 false 时，是 (null | undefined) 这个联合类型的超集
+上述 都可以看成超集，但不能完全看成超集，具体看以下情况
+:::
+
+
+
+```typescript
+type Case1 = [                                     // default true                  || "strictNullChecks": false
+  any extends unknown ? true : false,              // true                          || true
+  unknown extends any ? true : false,              // true                          || true
+  never extends unknown ? true : false,            // true                          || true
+  '👽',
+  undefined extends void ? true : false,           // true                          || true
+  null extends void ? true : false,                // false                         || true
+  undefined | null extends void ? true : false,    // false                         || true
+  void extends undefined ? true : false,           // false                         || false
+  void extends undefined | null ? true : false,    // false                         || false
+  '👽',
+  any | unknown,                                   // any                           || any
+  string | unknown,                                // unknown                       || unknown
+  never | unknown,                                 // unknown                       || unknown
+  void | unknown,                                  // unknown                       || unknown
+  void | never,                                    // void                          || void
+  void | string,                                   // string | void                 || string | void
+  void | undefined,                                // void | undefined              || void
+  void | null,                                     // void | null                   || void
+  void | null | undefined,                         // void | null | undefined       || void
+  '👽',
+  void & string,                                   // never                         || never
+  void & undefined,                                // undefined                     || undefined
+  void & null,                                     // never                         || never
+  void & null & undefined                          // never                         || never
+];
+
+```
+
+![any unknown void undefined null never](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/any%2520unknown%2520void%2520undefined%2520null%2520never.png)
+
+## extends 关键字的理解
+
+::: warning
+Distributive Conditional Types 满足以下两个条件，会触发分发
+
+1 是否是给泛型传入参数
+
+2 泛型参数在条件类型中是裸类型参数（没有被数组包裹）
+:::
+
+```typescript
+// ExtractKey1 2 和 3 的结果为什么不一样 🤔
+type IObject = { a: string; b: number; c: boolean }
+
+// 分发过程 ('a' extends 'a' | 'b' ? 'a' : never) | ('b' extends 'a' | 'b' ? 'b' : never) | ('c' extends 'a' | 'b' ? 'c' : never);
+type _ExtractKeys1 = Extract<keyof IObject, 'a' | 'b'>; //  "a" | "b"  ===> 泛型传入参数
+type _ExtractKeys2 = Extract<'a' | 'b' | 'c', 'a' | 'b'>; //  "a" | "b"  ===> 泛型传入参数
+type _ExtractKeys3 = 'a' | 'b' | 'c' extends 'a' | 'b' ? 'a' | 'b' | 'c' : never; // 肉眼可见为 never ===> 不是泛型入参，不会分发
+
+type Naked<T> = T extends boolean ? 'Y' : 'N'; // 裸类型参数会分发
+type Wrapped<T> = [T] extends [boolean] ? 'Y' : 'N'; // 非裸类型参数不会分发
+type ans1 = Naked<number | boolean>; // "N" | "Y"
+type ans2 = Wrapped<number | boolean>; // 'N'
+```
+
+```typescript
+type Person = { name: string; age?: number; gender?: undefined };
+
+type TestNever<T> = T extends never ? true : false;
+type Case1 = never extends never ? true : false; // true 
+
+// never 可以看成一个空的联合类型，触发分发机制， ts 认为对没有成员的联合类型执行没有意义，所以不会执行，直接返回 never
+type Case2 = Test<never>; // never
+
+// Required<Person> ===> { name: string; age: number; gender: never };
+const p1: Required<Person> = { name: 'HJ', age: 32, gender: null as never };
+
+// 可以利用这一点来进行可以获取对象类型所有的 必需参数 || 可靠参数
+type GetRequired<T> = { [P in keyof T as T[P] extends Required<T>[P] ? P : never]: T[P] };
+type GetOptional<T> = { [P in keyof T as T[P] extends Required<T>[P] ? never : P]: T[P] };
+
+```
+
+## 一些细节问题
+
+## 协变与逆变
+
+
 ## 深入理解typescript
 
 * [typeof 操作符的使用](https://www.typescriptlang.org/play?#code/PTAEBcE8AcFMHsBmoBQBjeA7AzuUBLTReUAXlAG8VQbRMBDAW1gC5QByACQHkBVdgDTVa9AOatQAJgAcQ2qHoATRQCdY2bGyrz50FfABuhNBPaBmm0DqyoOE7QafFDbtAh-KBmNPY3QAXzm1xmRVgVNgBXANhEQlhFFC8UKDhQAEkiEnIEhGRCYhQURDC0cHwsCHgAQRUVekgACgAPNkwQxgAjIIBKNgqqyAAeJtaggD5KTzVwEJVMUABtOoBdWPiYWFAAMQKyCBWkUu7qgG5clBA7LFxQQFrTQAAolAAbWDw6rYAiAAtYO7v4F4VsM5w4COGVAAA0thldnUjvdHqBIFsZgBGAAMAikKPmfwBuGBK1AAE0ITtkJA8YkACL0cD0YlwXaQGYDNoqRYYQGgb5oanFTBIxGeCic+Dcu5OABebwAtGhMIJOfRMKIQmJTIBaOUA4absby+GhCrn0MUcWBy9F3RXK1VOQCPQVqdSgsfR-uzcctEga7nTMsLuUUsEimc0WfMZuxzUqVeJ2Itcg88OKtkLwLA6uAnB8vvBtV5sS6gW7VgAtL27cVHPOgcXitjF8hJlNpjgZ77Z3KnOMKLY1ACy1LeADoqgF4Iwau1QL1QCj+wBWUAAfinoDYSPHTpx+Y7LS2vfAA6HihHY4nU9nC6X64rK9z53zsLw9EqiKR6Mk6IAzOiACyLDvENKUHQTCmP+8rssmmDgJoCiVDml63kcpz-v2DDMFs7DKB4yHgSaUH9tAITYG8NQzu0bZgJCyCAHByoAANawJAuyALMmgA68oAZN7oLeZzfCo-x1mM0ROGoijWPILR3CEpjiZJHhxAWoAAMLwDxfF0QxuyUdx8C8SgQA)

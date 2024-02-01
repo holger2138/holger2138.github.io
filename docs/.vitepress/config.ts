@@ -22,10 +22,10 @@ const themeConfig = {
         { text: 'CSS', link: '/CSS' },
         { text: 'JavaScript', link: 'JS' },
         { text: 'TypeScript', link: '/TypeScript' },
-        { text: 'Framework', link: '/vue 源码分析' },
+        { text: 'Framework', link: '/Framework' },
         { text: '面试题', link: '/面试题' },
-        { text: '面试题及相关数据处理', link: '/面试题及相关数据处理.md' },
-        { text: '数据结构与算法', link: '/数据结构与算法.md' }
+        { text: '面试题及相关数据处理', link: '/面试题及相关数据处理' },
+        { text: '数据结构与算法', link: '/数据结构与算法' }
       ]
     },
     {
@@ -34,15 +34,17 @@ const themeConfig = {
       collapsed: false,
       items: [
         { text: '计算机网络', link: '/计算机网络' },
-        { text: 'Linux', link: '/Linux' },
-        { text: 'Tool-Document', link: '/Tool-Document.md' }
+        { text: 'Linux', link: '/Linux' }
       ]
     },
     {
       text: '工具相关',
       collapsible: true,
       collapsed: false,
-      items: [{ text: 'VitePress相关语法', link: '/guide' }]
+      items: [
+        { text: 'tools', link: '/tools' },
+        { text: 'VitePress相关语法', link: '/guide' }
+      ]
     },
     {
       text: '其他相关',
