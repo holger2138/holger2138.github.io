@@ -1,1 +1,0 @@
-import{_ as s,c as i,o as a,V as n}from"./chunks/framework.-n81DdyM.js";const c=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"Framework.md","filePath":"Framework.md"}'),l={name:"Framework.md"},h=n("",31),k=[h];function p(t,e,F,r,d,g){return a(),i("div",null,k)}const o=s(l,[["render",p]]);export{c as __pageData,o as default};

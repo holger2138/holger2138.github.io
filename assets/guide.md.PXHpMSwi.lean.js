@@ -1,1 +1,0 @@
-import{_ as s,c as e,o as t,V as a}from"./chunks/framework.-n81DdyM.js";const h=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide.md","filePath":"guide.md"}'),i={name:"guide.md"},c=a("",6),o=[c];function l(d,n,p,r,_,m){return t(),e("div",null,o)}const v=s(i,[["render",l]]);export{h as __pageData,v as default};
