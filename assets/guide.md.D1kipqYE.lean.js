@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as e,a1 as t}from"./chunks/framework.Deg1NxRn.js";const h=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide.md","filePath":"guide.md"}'),i={name:"guide.md"},c=t("",6),o=[c];function l(d,n,p,r,_,m){return e(),a("div",null,o)}const v=s(i,[["render",l]]);export{h as __pageData,v as default};
