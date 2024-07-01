@@ -1,1 +1,0 @@
-import{_ as i,c as s,o as a,a1 as n}from"./chunks/framework.Deg1NxRn.js";const o=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"TypeScript.md","filePath":"TypeScript.md"}'),t={name:"TypeScript.md"},h=n("",49),k=[h];function l(e,p,r,F,d,g){return a(),s("div",null,k)}const c=i(t,[["render",l]]);export{o as __pageData,c as default};
