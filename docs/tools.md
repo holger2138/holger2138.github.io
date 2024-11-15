@@ -195,6 +195,7 @@ git cherry-pick ..branch # 摘取所有
 ```
 
 
+
 ## 腾讯云服务器使用总结
 
 ubuntu 初始用户默认账号是 ubuntu ，root 账号需要自己设置

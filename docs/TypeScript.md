@@ -3,44 +3,64 @@
 ::: info 理解
 top types ===> (any | unknown) , bottom type ===> never 用于继承时可以看作一个空的联合类型
 
-any 既是 top types 又是 bottom type 比 never 还要低
-
 void  strictNullChecks (默认为 true)
+
 为 true  时，是 undefined 超集
+
 为 false 时，是 (null | undefined) 这个联合类型的超集
-上述 都可以看成超集，但不能完全看成超集，具体看以下情况
+
+总体来说 void 可以看成比 null | undefined 范围还要再大一点的集合
 :::
 
 
-
 ```typescript
-type Case1 = [                                     // default true                  || "strictNullChecks": false
-  any extends unknown ? true : false,              // true                          || true
-  unknown extends any ? true : false,              // true                          || true
-  never extends unknown ? true : false,            // true                          || true
-  '👽',
-  undefined extends void ? true : false,           // true                          || true
-  null extends void ? true : false,                // false                         || true
-  undefined | null extends void ? true : false,    // false                         || true
-  void extends undefined ? true : false,           // false                         || false
-  void extends undefined | null ? true : false,    // false                         || false
-  '👽',
-  any | unknown,                                   // any                           || any
-  string | unknown,                                // unknown                       || unknown
-  never | unknown,                                 // unknown                       || unknown
-  void | unknown,                                  // unknown                       || unknown
-  void | never,                                    // void                          || void
-  void | string,                                   // string | void                 || string | void
-  void | undefined,                                // void | undefined              || void
-  void | null,                                     // void | null                   || void
-  void | null | undefined,                         // void | null | undefined       || void
-  '👽',
-  void & string,                                   // never                         || never
-  void & undefined,                                // undefined                     || undefined
-  void & null,                                     // never                         || never
-  void & null & undefined                          // never                         || never
+type Case01 = [                            /* strictNullChecks : true(默认) */ /* strictNullChecks : false */
+    any extends unknown ? true : false,                   // true                         
+    unknown extends any ? true : false,                   // true                       
+    never extends unknown ? true : false,                 // true                         
+    any extends never ? true : false,                     // boolean ⚠️
+    unknown extends never ? true : false,                 // false ⚠️
+    '----',
+    undefined extends void ? true : false,                // true                          
+    null extends void ? true : false,                     // false                         // true
+
+    null | undefined extends void ? true : false,         // false                         // true
+    void extends null | undefined ? true : false,         // false                         
+
+    undefined extends null ? true : false,                // false                         // true ⚠️
+    null extends undefined ? true : false,                // false                         // true ⚠️
+    '----',
+    void | undefined,                                     // void | undefined              // void
+    void | null,                                          // void | null                   // void
+    void | null | undefined,                              // void | null | undefined       // void
+    '----',
+    void & string,                                        // never                         // never
+    void & undefined,                                     // undefined                     // undefined
+    void & null,                                          // never                         // never
+    void & null & undefined                               // never                         // never
 ];
 
+/**
+ * 任意类型 <T> 与 any 交叉 联合 都是 any
+ * 任意类型 <T> 与 unknown 交叉=>T(any除外) 联合 => unknown(any除外)
+ *
+ */
+
+type Case02 = [
+  any & string,
+  any & unknown,
+  any | 1,
+  any | unknown,
+  unknown & string,
+  unknown | 1,
+  keyof any,
+  keyof unknown,
+  IsUnknown<never>,
+  any extends unknown ? 1 : 0
+];
+
+type IsAny<T> = 0 extends 1 & T ? true : false;
+type IsUnknown<T> = 0 extends 1 | T ? (keyof T extends never ? true : false) : false;
 ```
 
 ![any unknown void undefined null never](https://holger-picgo.oss-cn-beijing.aliyuncs.com/img/any%2520unknown%2520void%2520undefined%2520null%2520never.png)
@@ -50,9 +70,9 @@ type Case1 = [                                     // default true              
 ::: warning
 Distributive Conditional Types 满足以下两个条件，会触发分发
 
-1 是否是给泛型传入参数
+1 传入的必须是泛型参数
 
-2 泛型参数在条件类型中是裸类型参数（没有被数组包裹）
+2 传入的泛型参数是裸类型参数（没有被数组包裹）
 :::
 
 ```typescript
@@ -90,7 +110,210 @@ type GetOptional<T> = { [P in keyof T as T[P] extends Required<T>[P] ? never : P
 
 ## 一些细节问题
 
+::: info 辅助类型 Equal
+
+[参考链接1](https://github.com/type-challenges/type-challenges/discussions/9100)
+
+[参考链接2](https://stackoverflow.com/questions/68961864/how-does-the-equals-work-in-typescript/68963796?answertab=trending#tab-top)
+:::
+
+```typescript
+  /**
+   * 
+   * For literal types L1 and L2, L1 is equal to L2 if and only if L1 extends L2.
+   * 对于字面量类型   仅当  L1 extends L2 时，L2 = L1
+   * Two non-argument function types are equal if and only if their return types are equal.
+   * 两个无参函数类型相等 仅当它们返回值是相等的
+   * For non-argument function types F1 and F2 returning literal types L1 and L2, respectively, F1 is equal to F2 if and only if L1 extends L2.
+   * 对于返回值分别为字面量类型 L1 和 L2 的无参数函数类型 F1 和 F2 , 仅当 L1 extends L2 时 F2 = F1
+   * 
+   * Equal<{ a: string; b: number },{ a: string } & { b: number }> 并不相等，需要merge
+   *
+   */
+
+  type Assignable<X, Y> = X extends Y ? true : false;
+  type T11 = Assignable<1, number>; // expercted false
+  type F1 = () => 1;
+  type F2 = () => number;
+
+  type MutuallyAssignable<X, Y> = X extends Y ? (Y extends X ? true : false) : false;
+  type T12 = MutuallyAssignable<1, number>;
+  type T13 = MutuallyAssignable<{ a: string; b?: number }, { a: string; c?: number }>;
+
+  type Equal<X, Y> = (<V>() => V extends X ? 1 : 0) extends <V>() => V extends Y ? 1 : 0
+    ? true
+    : false;
+
+  type Case03 = [
+    F1 extends F2 ? true : false,
+    Equal<{ name: string; age: number }, { name: string; age: number }>,
+    Equal<{ name: string; age: number }, { name?: string; age: number }>
+  ];
+
+  type X1 = { a: string; b?: boolean };
+  type X2 = { a: string; c?: number };
+  type X1X2 = MutuallyAssignable<X1, X2>; // literal type true
+
+  function x1x2(x1: X1, x2: X2) {
+    // Mutual assignability:
+    x1 = x2; // ok
+    x2 = x1; // ok
+
+    // @ts-expect-error Type inequality:
+    x1.b = x2.b; // error: Property 'b' does not exist on type 'X2'.
+    // @ts-expect-error Type inequality:
+    x2.c = x1.c; // error: Property 'c' does not exist on type 'X1'.
+  }
+
+  type X1E1 = { a: string; c: string };
+
+  function x1x2e1(x1: X1, x2: X2, e1: X1E1) {
+    x1 = e1; // ok
+    // @ts-expect-error
+    x2 = e1; // error: Type 'E1' is not assignable to type 'X2'.
+    //          Types of property 'c' are incompatible.
+    //            Type 'string' is not assignable to type 'number'.
+  }
+```
+
+```typescript
+/**
+ * 元组问题
+ */
+
+type JSTypeMap = {
+  number: number;
+  string: string;
+  boolean: boolean;
+};
+type JSTypeName = keyof JSTypeMap;
+
+declare function addImpl<T extends JSTypeName[]>(
+  ...args: [...T, (...args: ArgsType<T>) => void]
+): void;
+addImpl('string', 'number', 'boolean', (a, b, c) => {});
+
+// 如果想推断为元组则必须以泛型形式传入
+type ArgsType<T extends JSTypeName[]> = { [P in keyof T]: JSTypeMap[T[P]] };
+type c = ArgsType<T01>;
+
+// 强制为元组
+type T01 = ['string', 'number', 'boolean'];
+
+type T02 = {
+  [P in keyof T01 as P extends '0' | '1' | '2' ? P : never]: JSTypeMap[T01[P] & keyof JSTypeMap];
+} & { length: T01['length'] };
+```
+
 ## 协变与逆变
+
+
+::: info 逆变与协变
+
+  在联合类型中属性多的是父类 
+
+  interface | type 中属性少的是父类 
+
+  函数中(返回值相同 | void)时参数多的是父类 ===> 逆变
+
+  总之父类型更宽泛，子类型更具体
+
+  子类型赋值给父类型 ===> 协变
+
+  父类型赋值给子类型 ===> 逆变
+:::
+
+```typescript
+type T01 = string | number | boolean; // 父类
+type T02 = string | number; // 子类
+type T03 = T02 extends T01 ? true : false;
+let parent1: T01 = false;
+let child1: T02 = 'foo';
+parent1 = child1; // ✅
+// child1 = parent1; //❎
+
+interface A {
+  a: number;
+}
+interface B extends A {
+  b: number;
+}
+
+let a: A = { a: 1 };
+let b: B = { a: 1, b: 2 };
+a = b; // ✅
+// @ts-expect-error
+b = a; //❎
+
+// 函数返回值是协变的 也就是说子类可以赋值给父类（父类型 = 子类型）
+type Fn1Type = () => A;
+type Fn2Type = () => B;
+let fn1: Fn1Type = () => a;
+let fn2: Fn2Type = () => b;
+fn1 = fn2; // ✅
+// @ts-expect-error
+fn2 = fn1; //❎
+
+// 函数参数位是逆变的 也就是说父类可以赋值给子类（子类型 = 父类型）
+type Fn3Type = (arg: A) => void;
+type Fn4Type = (arg: B) => void;
+let fn3: Fn3Type = arg => {};
+let fn4: Fn4Type = arg => {};
+fn4 = fn3; // ✅
+// @ts-expect-error
+fn3 = fn4; //❎
+
+type Case = [
+  B extends A ? true : false,
+  Fn2Type extends Fn1Type ? true : false,
+  Fn3Type extends Fn4Type ? true : false,
+  { name: string } extends { name?: string } ? true : false,
+  (() => 'foo') extends () => string ? true : false,
+  ((arg: {}) => void) extends (arg: { foo: 'foo' }) => void ? true : false
+];
+
+type T08 = { name: string };
+type T09 = { age: number; readonly gender?: string };
+
+// 参数返回交叉类型
+type UnionToIntersection1<T1, T2> = ((arg: T1) => void) | ((arg: T2) => void) extends (
+  arg: infer P
+) => void
+  ? P
+  : never;
+type UnionToIntersection2<U> = (U extends any ? (arg: U) => void : never) extends (
+  arg: infer P
+) => void
+  ? P
+  : never;
+
+// 参数（函数）返回函数交叉类型 返回最后一项  00730-hard-union-to-tuple.ts
+type fn05<U> = UnionToIntersection2<U extends unknown ? (x: U) => void : never> extends (
+  x: infer X
+) => void
+  ? X
+  : never;
+
+let lastParams: fn05<1 | 2> = 2;
+
+let info1: UnionToIntersection1<T08, T09> = { name: 'tom', age: 3, gender: 'male' };
+let info2: UnionToIntersection2<T08 | T09> = { name: 'tom', age: 3, gender: 'male' };
+
+// 返回值返回联合类型
+type TT<T1, T2> = (() => T1) | (() => T2) extends () => infer R ? R : never;
+let info3: TT<T08, T09> = { name: 'tom' };
+let info4: TT<T08, T09> = { age: 3, gender: 'male' };
+type C<U> = U extends any ? ((() => U) extends () => infer R ? R : never) : never;
+type C1<U> = (U extends any ? () => U : never) extends () => infer R ? R : never;
+
+let info5: C1<{ a: 1 } | { b: 2 }> = { a: 1, b: 2 };
+
+// 判断联合类型
+type IsUnion<T, U = T> = (T extends any ? (U extends T ? true : unknown) : never) extends true
+  ? false
+  : true;
+type T9 = [IsUnion<T08 | T09>, IsUnion<never>, IsUnion<never | string>];
+```
 
 
 ## 深入理解typescript

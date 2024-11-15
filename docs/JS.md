@@ -1,5 +1,7 @@
 ## 原生
 
+
+
 ## 构造函数与类的理解
 
 - 构造函数
@@ -164,6 +166,8 @@ let obj = create(Person, 'hou', 28);
 console.log(obj);
 console.log(Object.getPrototypeOf(obj) === Person.prototype);
 ```
+
+
 
 ## Object 静态方法及属性深入理解
 
@@ -377,6 +381,8 @@ console.log(obj);
 console.log(Object.isFrozen(obj)); // true
 ```
 
+
+
 ### DOM 节点
 
 ```html
@@ -401,6 +407,8 @@ console.log(Object.isFrozen(obj)); // true
   console.log(ul.childNodes[2].previousSibling === ul.childNodes[2].previousElementSibling);
 </script>
 ```
+
+
 
 ### 事件流
 

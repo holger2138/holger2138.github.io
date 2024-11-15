@@ -522,7 +522,7 @@ rem 相对于根元素（即 `html` 元素 默认为 16px ）、 em 相对于父
 
   `fixed` 相对于视口(可视区域)固定，background-position 也是相对于可视区域了（所以 center 可能看不见）
 
-- `background-image || background-color` 默认绘制区域都是 `border-box`
+- xxxxxxxxxx /** *@see {@link https://leetcode.cn/problems/Gu0c2T/description/ | LCR 089. 打家劫舍} * @param {number[]} nums * @returns {number} */​function rob(nums = [1, 2, 3, 1]) {  const dp = Array(nums.length).fill(0);  dp[0] = nums[0];  dp[1] = Math.max(nums[0], nums[1]);  for (let i = 2; i < nums.length; i++) {    dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);  }  return dp.at(-1);}/** * @see {@link https://leetcode.cn/problems/longest-increasing-subsequence/description/ | 力扣 300. 最长递增子序列 } * @param {number[]} nums * @returns number */function lengthOfLIS(nums = [10, 9, 2, 5, 3, 7, 101, 18]) {  // 递归 + 记忆化搜索  // let ans = 0;  // // const memo = {};  // function len(nums, i) {  //   // if (memo[i]) return memo[i];  //   if (i === nums.length - 1) return 1;  //   let maxLen = 1;  //   for (let j = i + 1; j < nums.length; j++) {  //     if (nums[j] > nums[i]) {  //       maxLen = Math.max(maxLen, len(nums, j) + 1);  //     }  //   }  //   // memo[i] = maxLen;  //   return maxLen;  // }  // for (let i = 0; i < nums.length; i++) {  //   ans = Math.max(ans, len(nums, i));  // }​  const dp = Array(nums.length).fill(1);  // 以每个元素开头的最长递增子序列的长度  // for (let i = nums.length - 1; i >= 0; i--) {  //   for (let j = i + 1; j < nums.length; j++) {  //     if (nums[i] < nums[j]) {  //       dp[i] = Math.max(dp[i], dp[j] + 1);  //     }  //   }  // }​  // 以每个元素结尾的最长递增子序列的长度  for (let i = 0; i < nums.length; i++) {    for (let j = 0; j < i; j++) {      if (nums[i] > nums[j]) {        dp[i] = Math.max(dp[i], dp[j] + 1);      }    }  }  console.log('dp :>> ', dp);  return Math.max(...dp);}​// console.time('lengthOfLIS');// const arr = [//   637, 261, 759, 367, 814, 707, 965, 861, 757, 667, 944, 542, 29, 860, 476, 794, 993, 255, 664, 53, 922, 160, 115, 380,//   480, 889, 252, 389, 556, 104, 587, 982, 13, 748, 221, 417, 286, 186, 938, 888, 784, 398, 163, 780, 816, 73, 142, 632,//   952, 455, 129, 135, 1, 892, 5, 214, 792, 220, 169, 893, 170, 296, 321, 203, 552, 897, 694, 640, 209, 962, 994, 201,//   915, 392, 305, 22, 369, 424, 941, 149, 270, 66, 339, 308, 837, 617, 600, 3, 610, 933, 724, 346, 67, 317, 363, 838,//   313, 492, 713, 323// ];// console.log(lengthOfLIS());​// console.timeEnd('lengthOfLIS');js
 
   当设置 `background-repeat` 非 no-repeat 后，`background-image` 绘制区域 padding-box
 
@@ -617,29 +617,29 @@ rem 相对于根元素（即 `html` 元素 默认为 16px ）、 em 相对于父
 transition-timing-function:
 
     ease-默认值，速度由快到慢
-
+    
     linear-匀速
-
+    
     ease-in：加速
-
+    
     ease-out：减速
-
+    
     ease-in-out：先加速再减速
 
 ### transform
 
     transform: rotate(45deg);顺时针旋转
-
+    
     transform:skew(45deg, 10deg);
-
+    
     skew(水平方向（右-正），垂直方向（下为正）)
-
+    
     transform: scale(1.5，1.2); 水平，垂直都绽放
-
+    
     如果只写一个参数，就是等比缩放
-
+    
     transform:translate(x,y);
-
+    
     transform：translateX(50%):走自己宽度的一半
 
 #### 三角形=>三角提示框
